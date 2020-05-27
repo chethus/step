@@ -2,17 +2,33 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>My Portfolio</title>
+    <lang="en-US">
+    <title>Chet's Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
   <body>
-    <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
+    <h1>About Me</h1>
+    <div class="flex-container">
+        <img id="me_switerland" src="images/me_switzerland.jpg" alt="Me in Switzerland"/>
+        <p class="container-text">
+          Hi! My name is Chet and I'm a rising sophmore at UC Berkeley. 
+          I've been a computer science and math enthusiast for years 
+          and love dicsussing and learning new ideas. Algorithms are of 
+          particular interest to me. In my free time, I enjoy playing 
+          board/video games with my friends or watching interesting videos.
+          <br>
+          <a class="img-link" href="https://github.com/chethus/">
+            <img class="logo" src="images/github-mark.png" alt="Github"/>
+          </a>
+          <a class="img-link" href="https://www.linkedin.com/in/chetbhateja">
+            <img class="logo" src="images/linkedin-logo.png" alt="LinkedIn"/>
+          </a>
+        </p>
+    </div>
+    <br>
+    <button onclick="randomFact()">Random Fact</button>
+    <div id="fact-container">&nbsp;</div>
     </div>
   </body>
 </html>
