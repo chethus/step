@@ -3,8 +3,12 @@ body {
     font-size: 20px;
 }
 
-h1 {
+h1, h2 {
     text-align: center;
+}
+
+p {
+    margin: 5px 100px;
 }
 
 .flex-container {
@@ -53,4 +57,12 @@ button {
 
 #caption {
     text-align: center;
+}
+
+.project-img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 50vh;
+    max-width: 90vw;
 }
