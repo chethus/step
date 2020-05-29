@@ -42,6 +42,10 @@ p {
     background-color: dodgerblue;
 }
 
+.center {
+    text-align: center;
+}
+
 .flex-container {
     display: flex;
     flex-direction: row;
