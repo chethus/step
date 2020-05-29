@@ -101,3 +101,27 @@ button {
     height: 50vh;
     max-width: 90vw;
 }
+
+#start {
+    display: inline;
+}
+
+#question {
+    display: none;
+    margin: 10 auto;
+    font-size: 20;
+}
+
+#answer {
+    display: none;
+    margin: 10 auto;
+}
+
+#submit {
+    display: none;
+    margin: 10 auto;
+}
+
+#scores {
+    display: none;
+}
