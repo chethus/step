@@ -3,12 +3,43 @@ body {
     font-size: 20px;
 }
 
-h1, h2 {
+h1 {
+    margin-top: 50px;
+    text-align: center;
+}
+
+h2 {
     text-align: center;
 }
 
 p {
     margin: 5px 100px;
+}
+
+.navbar {
+    position: fixed;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    top: 0;
+    background-color: #333;
+}
+
+.navbar > li {
+    float: left;
+}
+
+.navbar > li > a {
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    padding: 10px;
+    color: white;
+}
+
+.active {
+    background-color: dodgerblue;
 }
 
 .flex-container {
