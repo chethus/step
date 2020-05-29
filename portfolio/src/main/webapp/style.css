@@ -76,7 +76,12 @@ p {
 }
 
 button {
-    margin: 20px;
+    background-color: green;
+    color: white;
+    margin: 1vh 2vw;
+    border: none;
+    padding: 10px 15px;
+    font-size: min(3vh, 4vw);
 }
 
 #fact-container {
