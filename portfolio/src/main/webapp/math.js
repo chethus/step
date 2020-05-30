@@ -16,7 +16,7 @@ window.onload = function setUpGame() {
 }
 
 function startGame() {
-    question.innerText = generateQ();
+    question.textContent = generateQ();
     instructions.style.display = "none";
     start.style.display = "none";
     question.style.display = "inline";
@@ -32,9 +32,9 @@ function check() {
         score ++;
         highscore = Math.max(score, highscore);
     }
-    scores.innerText = "Score: " + score + "     Highscore: " + highscore;
+    scores.textContent = "Score: " + score + "     Highscore: " + highscore;
     answer.value = "";
-    question.innerText = generateQ();
+    question.textContent = generateQ();
 }
 
 function generateQ() {
@@ -62,7 +62,7 @@ function generateQ() {
 
 function gameOver() {
     score = 0;
-    scores.innerText = "Score: " + score + "     Highscore: " + highscore;
+    scores.textContent = "Score: " + score + "     Highscore: " + highscore;
     answer.value = "";
     instructions.style.display = "inline";
     start.style.display = "inline";

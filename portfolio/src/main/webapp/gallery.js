@@ -57,7 +57,7 @@ function nextImage() {
     HTMLImage.setAttribute("src", "gallery/" + imageName);
     //Wait until the image is loaded to change the caption
     HTMLImage.onload = function() {
-        HTMLCaption.innerText = imageCaption;
+        HTMLCaption.textContent = imageCaption;
     }
 }
 
@@ -73,8 +73,8 @@ function prevImage() {
 //Shuffles an array, used for image gallery
 function shuffle(arr) {
     //Number of unshuffled images at the front of the array
-    var lenLeft = arr.length;
-    for (var i = lenLeft; i >= 0; i --) {
+    let lenLeft = arr.length;
+    for (let i = lenLeft; i >= 0; i --) {
         //Picks a random unshuffled element
         const ind = Math.floor(Math.random() * lenLeft);
         //Moves element to back of the array
