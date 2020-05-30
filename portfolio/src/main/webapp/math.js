@@ -21,7 +21,7 @@ function startGame() {
     start.style.display = "none";
     question.style.display = "inline";
     answer.style.display = "inline";
-    submit.style.display = "inline";
+    submit.style.display = "inline-block";
     scores.style.display = "inline";
     setTimeout(gameOver, 60000);
 }
@@ -65,7 +65,7 @@ function gameOver() {
     scores.textContent = "Score: " + score + "     Highscore: " + highscore;
     answer.value = "";
     instructions.style.display = "inline";
-    start.style.display = "inline";
+    start.style.display = "inline-block";
     question.style.display = "none";
     answer.style.display = "none";
     submit.style.display = "none";

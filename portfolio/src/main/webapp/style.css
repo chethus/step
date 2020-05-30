@@ -110,13 +110,13 @@ button {
 }
 
 #start {
-    display: inline;
+    display: inline-block;
 }
 
 #question {
     display: none;
     margin: 10 auto;
-    font-size: min(6vh, 8vw)
+    font-size: min(12vh, 16vw)
 }
 
 #answer {
