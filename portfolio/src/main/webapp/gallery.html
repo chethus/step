@@ -7,13 +7,18 @@
         <script src="script.js"></script>
     </head>
     <body>
+        <ul class="navbar">
+            <li><a href="index.html">About</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li class="active"><a href="gallery.html">Gallery</a></li>
+        </ul>
         <h1> Gallery </h1>
         <!-- Image and caption set by Javascript -->
         <img id="gallery" src=""/>
         <p id="caption">&nbsp;</p>
         <div class="flex-container">
-            <button class="gallerybtn" onclick="nextImage()">Next</button>
             <button class="gallerybtn" onclick="prevImage()">Previous</button>
+            <button class="gallerybtn" onclick="nextImage()">Next</button>
         </div>
     </body>
 </html>

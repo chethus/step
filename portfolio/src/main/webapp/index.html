@@ -7,6 +7,11 @@
     <script src="script.js"></script>
   </head>
   <body>
+    <ul class="navbar">
+        <li class="active"><a href="index.html">About</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+    </ul>
     <h1>About Me</h1>
     <div class="flex-container">
         <img id="me_switerland" src="images/me_switzerland.jpg" alt="Me in Switzerland"/>
@@ -26,8 +31,9 @@
         </p>
     </div>
     <br>
-    <button onclick="randomFact()">Random Fact</button>
-    <div id="fact-container">&nbsp;</div>
+    <div class="center">
+        <button onclick="randomFact()">Random Fact</button>
+        <div id="fact-container">&nbsp;</div>
     </div>
   </body>
 </html>
