@@ -12,8 +12,7 @@ h1 {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    max-width: 1200px;
-    margin: 20px;
+    margin: 5px 50px;
 }
 
 .img-link {
@@ -42,4 +41,16 @@ button {
 
 #fact-container {
     margin: 20px;
+}
+
+#gallery {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 65vh;
+    max-width: 90vw;
+}
+
+#caption {
+    text-align: center;
 }
