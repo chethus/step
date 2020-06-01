@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8">
+        <title> Chet's Projects</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+    </head>
+    <body>
+        <h1> Projects </h1>
+        <h2> Nonogram Solver </h2>
+        <img class="project-img" src="images/nonogram.gif" alt="Nonogram Solver video"/>
+        <br>
+        <p> I made a program to automatically solve nonograms on 
+            <a href="https://www.puzzle-nonograms.com">Puzzle Nonograms</a>.
+            The program takes in the nonogram dimensions, the html for the hints, 
+            the location of the top left corner, and the location for the bottom 
+            right corner. Then the program extracts the hints from the html, 
+            generates possible permutations, and eliminates them iteratively. 
+            Finally, the program uses the pixel locations and the pyautogui library 
+            to automatically click the cells. </p>
+        <h2> Fluid Flow Simulation </h2>
+        <img class="project-img" src="images/darcy.png" alt="Fluid Flow simulation"/>
+        <br>
+        <p> In my differential equations class, I programmed a MATLAB simulation of 
+            fluid flow using Darcy's law. The method involves splitting up 
+            the flow regions into cells and assuming the cells have uniform 
+            material properties within them. Then the program creates and solves 
+            a system of equations, finding the pressure graph in the cells shown 
+            above.
+        </p>
+    </body>
+</html>
