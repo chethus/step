@@ -6,7 +6,7 @@ let instructions;
 let question;
 let scores;
 
-//Setting variables for some elements to get convenient access
+// Setting variables for some elements to get convenient access.
 window.onload = function setUpGame() {
     start = document.getElementById("start");
     instructions = document.getElementById("instructions");
@@ -16,9 +16,9 @@ window.onload = function setUpGame() {
     scores = document.getElementById("scores");
 }
 
+// Remove intro screen and show questions when game starts.
 function startGame() {
     question.textContent = generateQ();
-    //Remove intro screen and show questions when game starts
     instructions.style.display = "none";
     start.style.display = "none";
     question.style.display = "inline";
@@ -30,14 +30,14 @@ function startGame() {
 
 function check() {
     const answer = document.getElementById("answer");
-    //Compare answers as strings
+    // Compare answers as Strings since input box holds String.
     if (answer.value === correctAnswer + "") {
         score ++;
         highscore = Math.max(score, highscore);
     }
     scores.textContent = "Score: " + score + "     Highscore: " + highscore;
     answer.value = "";
-    //Update with next question
+    // Update with next question.
     question.textContent = generateQ();
 }
 
@@ -45,8 +45,8 @@ function generateQ() {
     const type = Math.floor(Math.random() * 3);
     let a;
     let b;
-    //Choose between addition, subtraction, or multiplication problem
-    //Addition and subtraction numbers are larger
+    // Choose between addition, subtraction, or multiplication problem.
+    // Addition and subtraction numbers are larger.
     switch (type) {
         case 0:
             a = Math.floor(Math.random() * 1000);
@@ -66,7 +66,7 @@ function generateQ() {
     }
 }
 
-//Reset score, remove question screen, go back to intro screen
+// Reset score, remove question screen, go back to intro screen.
 function gameOver() {
     score = 0;
     scores.textContent = "Score: " + score + "     Highscore: " + highscore;
