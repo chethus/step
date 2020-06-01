@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8">
+        <title> Chet's Projects</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
+    </head>
+    <body>
+        <ul class="navbar">
+            <li><a href="index.html">About</a></li>
+            <li class="active"><a href="projects.html">Projects</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+        </ul>
+    </body>
+    <h1> Mental Math Game </h1>
+    <div class="center">
+        <p id="instructions">
+            You have 1 minute to answer as many questions as you can.
+        </p>
+        <br>
+        <button id="start" onclick="startGame()">Start</button>
+        <br>
+        <p id="scores">
+            Score: 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Highscore: 0
+            </p>
+        <br>
+        <p id="question">&nbsp;</p>
+        <br>
+        <input id="answer" type="text" value="" onkeypress="if (event.key ==='Enter') check()">
+        <br>
+        <button id="submit" onclick="check()">Submit</button>
+    </div>
+</html>
