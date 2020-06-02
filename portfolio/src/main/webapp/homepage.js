@@ -13,6 +13,15 @@
 // limitations under the License.
 
 /**
+ * Fetches a message from the server and adds it to the DOM.
+ */
+$(document).ready(async function getMessage() {
+    const msg = await fetch('/data');
+    const msgText = await msg.text();
+    document.getElementById('msg-container').textContent = msgText;
+});
+
+/**
  * Adds a random fact to the page.
  */
 function randomFact() {
