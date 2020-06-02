@@ -13,13 +13,26 @@
 // limitations under the License.
 
 /**
- * Fetches a message from the server and adds it to the DOM.
+ * Fetches a comment from the server and adds it to the DOM.
  */
-$(document).ready(async function getMessage() {
-    const msg = await fetch('/data');
-    const msgText = await msg.text();
-    document.getElementById('msg-container').textContent = msgText;
+let commentText;
+$(document).ready(async function getData() {
+    const commentJSON = await fetch('/data');
+    const comment = await commentJSON.json();
+    //Add each element of comment to the container list
+    const $list = document.getElementById("comment-container")
+    $list.innerHTML = '';
+    comment.forEach(text => {$list.appendChild(createLi(text))});
 });
+
+/**
+ * Creates a list entry with the given text.
+ */
+function createLi(text) {
+    const entry = document.createElement("li");
+    entry.textContent = text;
+    return entry;
+}
 
 /**
  * Adds a random fact to the page.
