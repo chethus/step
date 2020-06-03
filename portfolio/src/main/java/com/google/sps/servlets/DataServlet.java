@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -54,12 +55,21 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        // Get comment limit parameter.
+        int max;
+        try {
+            max = Integer.parseInt(request.getParameter("max"));
+        } catch (NumberFormatException e) {
+            max = 20;
+        }
+        
         ArrayList<Comment> comments = new ArrayList<>();
 
         // Add results of query to Comments list.
         Query query = new Query("comment").addSort("timestamp", SortDirection.DESCENDING);
         PreparedQuery results = datastore.prepare(query);
-        for (Entity entity : results.asIterable()) {
+        for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(max))) {
             comments.add(Comment.makeComment(entity));
         }
 

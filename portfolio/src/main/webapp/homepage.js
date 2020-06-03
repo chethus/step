@@ -13,18 +13,26 @@
 // limitations under the License.
 
 /**
- * Fetches a comment from the server and adds it to the DOM.
+ * Fetches comments from the server and adds them to the DOM.
  */
-$(document).ready(async function loadComments() {
+async function loadComments() {
 
-    // Fetch JSON and convert to comments list.
-    const commentsJSON = await fetch('/data');
+    // Get comment limit from form.
+    const selectMax = document.getElementById("select-max");
+    const maxComments = selectMax.options[selectMax.selectedIndex].value;
+  
+    // Request JSON based on user comment limit.
+    const commentsJSON = await fetch("/data?max=" + maxComments);
+    // Convert JSON to object.
     const comments = await commentsJSON.json();
 
     // Add all comments to comment container.
     const container = document.getElementById("comment-container");
+    container.innerHTML = "";
     comments.forEach(comment => container.innerHTML += createComment(comment).outerHTML);
-});
+}
+
+$(document).ready(loadComments);
 
 /**
  * Create a list entry with the given text.
@@ -33,6 +41,7 @@ function createComment(comment) {
     
     // Set up div for a comment.
     const commentDiv = document.createElement("div");
+    commentDiv.class
     commentDiv.innerHTML = "";
 
     // Add paragraphs for author, subject, and comment text.

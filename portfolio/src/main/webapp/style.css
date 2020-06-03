@@ -48,7 +48,7 @@ p {
     text-align: center;
 }
 
-#about {
+.flex-container {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -76,7 +76,7 @@ p {
     margin: 1vw;    object-fit: contain;
 }
 
-button {
+button, select, .submit {
     background-color: green;
     color: white;
     margin: 1vh 2vw;
