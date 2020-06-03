@@ -15,6 +15,12 @@
 package com.google.sps.servlets;
 
 import com.google.sps.data.Comment;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -26,18 +32,40 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    private ArrayList<Comment> comments = new ArrayList<>();
+    private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        comments.add(Comment.makeComment(request));
+        
+        // Create Comment from request.
+        Comment c = Comment.makeComment(request);
+
+        // Set properties in Datastore entity.
+        Entity commentEntity = new Entity("comment");
+        commentEntity.setProperty("timestamp", c.getTimestamp());
+        commentEntity.setProperty("author", c.getAuthor());
+        commentEntity.setProperty("subject", c.getSubject());
+        commentEntity.setProperty("text", c.getText());
+        datastore.put(commentEntity);
+
+        // Reload the page.
         response.sendRedirect("/index.html");
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ArrayList<Comment> comments = new ArrayList<>();
+
+        // Add results of query to Comments list.
+        Query query = new Query("comment").addSort("timestamp", SortDirection.DESCENDING);
+        PreparedQuery results = datastore.prepare(query);
+        for (Entity entity : results.asIterable()) {
+            comments.add(Comment.makeComment(entity));
+        }
+
+        // Send JSON back to site.
+        Gson gson = new Gson();
         response.setContentType("application/json");
-        String json = new Gson().toJson(comments);
-        response.getWriter().println(json);
+        response.getWriter().println(gson.toJson(comments));
     }
 }
