@@ -41,7 +41,6 @@ function createComment(comment) {
     
     // Set up div for a comment.
     const commentDiv = document.createElement("div");
-    commentDiv.class
     commentDiv.innerHTML = "";
 
     // Add paragraphs for author, subject, and comment text.
