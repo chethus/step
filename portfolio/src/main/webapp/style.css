@@ -48,7 +48,7 @@ p {
     text-align: center;
 }
 
-.flex-container {
+#about {
     display: flex;
     flex-direction: row;
     align-items: center;

@@ -16,7 +16,7 @@
         <li><a href="math.html">Math&nbsp;Game</a></li>
     </ul>
     <h1>About Me</h1>
-    <div class="flex-container">
+    <div id="about">
         <img id="me_switzerland" src="images/me_switzerland.jpg" alt="Me in Switzerland"/>
         <p class="container-text">
           Hi! My name is Chet and I'm a rising sophmore at UC Berkeley. 
@@ -37,7 +37,21 @@
     <div class="center">
         <button onclick="randomFact()">Random Fact</button>
         <div id="fact-container">&nbsp;</div>
-        <ul id="comment-container"></ul>
+    </div>
+    <h1>Leave A Comment</h1>
+    <div class="center">
+        <form action="/data" method="POST">
+            <label for="author">Author</label><br>
+            <input type="text" id="author" name="author"><br>
+            <label for="subject">Subject</label><br>
+            <input type="text" id="subject" name="subject"><br>
+            <label for="text">Text</label><br>
+            <input type="text" id="text" name="text"><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <h1>Comments</h1>
+    <div id="comment-container" class="center">
     </div>
   </body>
 </html>
