@@ -48,11 +48,18 @@ p {
     text-align: center;
 }
 
-.flex-container {
+.flex-center {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    margin: 5px 2vw;
+}
+
+.flex-left {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
     margin: 5px 2vw;
 }
 
@@ -76,7 +83,7 @@ p {
     margin: 1vw;    object-fit: contain;
 }
 
-button, select, .submit {
+button, select {
     background-color: green;
     color: white;
     margin: 1vh 2vw;
@@ -133,4 +140,37 @@ button, select, .submit {
 
 #scores {
     display: none;
+}
+
+#comment-form {
+    align-items: left;
+    max-width: 25vw;
+    margin: auto;
+}
+
+#comment-submit {
+    background-color: green;
+    color: white;
+    margin: 10px;
+    border: none;
+    padding: 10px 15px;
+    font-size: min(3vh, 4vw);
+}
+
+#comment-container {
+    margin: 1vh 10vw;
+    list-style-type: none;
+    border: thin solid black;
+}
+
+.comment {
+    display: block;
+    align: left;
+    width: 70vw;
+    margin: 2vh auto;
+    border: thin dotted #EEE;
+}
+
+.name {
+    color: dodgerblue;
 }

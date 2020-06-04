@@ -8,7 +8,7 @@ import com.google.appengine.api.datastore.Entity;
  */
 public class Comment {
     private String author;
-    private String subject;
+    private String id;
     private String text;
     private long timestamp;
 
@@ -20,10 +20,10 @@ public class Comment {
         this.timestamp = System.currentTimeMillis();
     }
 
-    public Comment(String author, String subject, String text) {
+    public Comment(String author, String id, String text) {
         this();
         this.author = author;
-        this.subject = subject;
+        this.id = id;
         this.text = text;
     }
 
@@ -44,12 +44,12 @@ public class Comment {
         this.author = author;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getID() {
+        return id;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setID(String id) {
+        this.id = id;
     }
 
     public String getText() {
@@ -67,12 +67,12 @@ public class Comment {
     public static Comment makeComment(HttpServletRequest request) {
         Comment c = new Comment();
         c.setAuthor(request.getParameter("author"));
-        if (c.getAuthor() == null) {
+        if (c.getAuthor() == null || c.getAuthor().length() == 0) {
             c.setAuthor("Anonymous");
         }
-        c.setSubject(request.getParameter("subject"));
-        if (c.getSubject() == null) {
-            c.setSubject("No subject");
+        c.setID(request.getParameter("id"));
+        if (c.getID() == null || c.getID().length() == 0) {
+            c.setID(String.valueOf(System.currentTimeMillis()));
         }
         c.setText(request.getParameter("text"));
         if (c.getText() == null) {
@@ -87,7 +87,7 @@ public class Comment {
     public static Comment makeComment(Entity entity) {
         Comment c = new Comment();
         c.setAuthor((String) entity.getProperty("author"));
-        c.setSubject((String) entity.getProperty("subject"));
+        c.setID((String) entity.getProperty("id"));
         c.setText((String) entity.getProperty("text"));
         return c;
     }
