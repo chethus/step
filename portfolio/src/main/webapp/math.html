@@ -2,6 +2,7 @@
 <html lang="en-US">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title> Chet's Projects</title>
         <link rel="stylesheet" href="style.css">
         <script src="math.js"></script>
@@ -9,8 +10,9 @@
     <body>
         <ul class="navbar">
             <li><a href="index.html">About</a></li>
-            <li class="active"><a href="projects.html">Projects</a></li>
+            <li><a href="projects.html">Projects</a></li>
             <li><a href="gallery.html">Gallery</a></li>
+            <li class="active"><a href="math.html">Math&nbsp;Game</a></li>
         </ul>
     </body>
     <h1> Mental Math Game </h1>
@@ -19,11 +21,11 @@
             You have 1 minute to answer as many questions as you can.
         </p>
         <br>
-        <button id="start" onclick="startGame()">Start</button>
-        <br>
         <p id="scores">
             Score: 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Highscore: 0
             </p>
+        <br>
+        <button id="start" onclick="startGame()">Start</button>
         <br>
         <p id="question">&nbsp;</p>
         <br>

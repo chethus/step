@@ -2,6 +2,7 @@
 <html lang="en-US">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title> Chet's Gallery </title>
         <link rel="stylesheet" href="style.css">
         <script src="gallery.js"></script>
@@ -11,14 +12,15 @@
             <li><a href="index.html">About</a></li>
             <li><a href="projects.html">Projects</a></li>
             <li class="active"><a href="gallery.html">Gallery</a></li>
+            <li><a href="math.html">Math&nbsp;Game</a></li>
         </ul>
         <h1> Gallery </h1>
         <!-- Image and caption set by Javascript -->
         <img id="gallery" src=""/>
         <p id="caption">&nbsp;</p>
         <div class="flex-container">
-            <button class="gallerybtn" onclick="prevImage()">Previous</button>
-            <button class="gallerybtn" onclick="nextImage()">Next</button>
+            <button class="gallerybtn" onclick="prevImage()">&lt;</button>
+            <button class="gallerybtn" onclick="nextImage()">&gt;</button>
         </div>
     </body>
 </html>
