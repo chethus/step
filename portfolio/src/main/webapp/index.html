@@ -66,13 +66,18 @@
     <!-- Comment display options -->
     <div class="flex-center">
         <button onclick=deleteAll()>Delete All</button>
-        <button onclick=loadComments()>Refresh </button>
-        <select id="select-max" name="max">
+        <button onclick="prevPage()">&lt;</button>
+        <input id="page" onchange="loadComments()" type="text" value="1">
+        <button onclick="nextPage()">&gt;</button>
+        <select id="select-max" onchange="loadComments()" name="max">
             <option value="5">5</option>
             <option value="20" selected>20</option>
             <option value="50">50</option>
             <option value="100">100</option>
         </select>
+        <!--
+        <button onclick=loadComments()>Refresh </button>
+        -->
     </div>
     <!-- Container to udpate with comments using JS -->
     <div class="ul" id="comment-container">

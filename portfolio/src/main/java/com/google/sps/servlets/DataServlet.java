@@ -58,20 +58,30 @@ public class DataServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+
         // Get comment limit parameter.
-        int max;
+        int max = Integer.parseInt(request.getParameter("max"));
+
+        // Get page number.
+        int page;
         try {
-            max = Integer.parseInt(request.getParameter("max"));
+            page = Integer.parseInt(request.getParameter("page"));
         } catch (NumberFormatException e) {
-            max = 20;
+            response.setStatus(404);
+            return;
         }
         
         ArrayList<Comment> comments = new ArrayList<>();
 
-        // Add results of query to Comments list.
+        // Create a query for the Comments.
         Query query = new Query("comment").addSort("timestamp", SortDirection.DESCENDING);
         PreparedQuery results = datastore.prepare(query);
-        for (Entity entity : results.asIterable(FetchOptions.Builder.withLimit(max))) {
+
+        // Skip earlier pages and enforce Comment limit.
+        FetchOptions options = FetchOptions.Builder.withLimit(max);
+        options.offset((page - 1) * max);
+
+        for (Entity entity : results.asIterable(options)) {
             comments.add(Comment.makeComment(entity));
         }
 
