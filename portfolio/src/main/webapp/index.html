@@ -39,19 +39,28 @@
         <div id="fact-container">&nbsp;</div>
     </div>
     <h1>Leave A Comment</h1>
-    <!-- Form for submitting comments via POST request -->
-    <div id="comment-form">
-        <form action="/data" method="POST">
+    <!-- Form for submitting comments via POST request and returning their IDs -->
+    <div id="form-container">
+        <form id="comment-form">
             <label for="author">Author&nbsp;</label>
             <input type="text" id="author" name="author"><br>
+            <label for="text">Text&nbsp;</label>
+            <input type="textarea" id="text" name="text"><br>
+        </form>
+        <div class="center">
+            <button onclick="submitComment()">Submit</button>
+        </div>
+    </div>
+    <!-- Form for deleting a specific coment -->
+    <h1>Delete A Comment</h1>
+    <div id="delete-container">
+        <form id="delete-form">
             <label for="id">Comment ID&nbsp;</label>
             <input type="text" id="id" name="id"><br>
-            <label for="text">Text&nbsp;</label>
-            <input type="text" id="text" name="text"><br>
-            <div class="center">
-                <input id="comment-submit" class="button" type="submit" value="Submit">
-            </div>
         </form>
+        <div class="center">
+            <button onclick="deleteComment()">Submit</button>
+        </div>
     </div>
     <h1>Comments</h1>
     <!-- Comment display options -->
