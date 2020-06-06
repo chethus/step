@@ -22,26 +22,41 @@ import java.util.HashMap;
 @WebServlet("/game")
 public class GameServlet extends HttpServlet {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    // Scores of games currently in progress.
     private HashMap<Long, Integer> curScores = new HashMap<>();
+
+    // Next answers for games currently in progress.
     private HashMap<Long, Integer> ans = new HashMap<>();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        // Load request params into strings.
         String startTimeStr = request.getParameter("start");
         String userAnsStr = request.getParameter("ans");
         String name = request.getParameter("name");
+
+        // A post request must have a game start time and either an answer or username (for the highscore list).
         if (startTimeStr == null || (userAnsStr == null && name == null)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
+
         long startTime = Long.parseLong(startTimeStr);
         if (userAnsStr != null) {
+
+            // Error if the game is over or if the start time is in the future (modulo some error).
+            // Prevents hacking via extending game duration.
             long time = System.currentTimeMillis();
             if (time - startTime > 60500 || time - startTime < -50) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
+
             try {
+
+                // Update the users score (they are identified by their game start time).
                 int userAns = Integer.parseInt(userAnsStr);
                 int correct = 0;
                 if (userAns == ans.getOrDefault(startTime, Integer.MIN_VALUE)) {
@@ -49,30 +64,43 @@ public class GameServlet extends HttpServlet {
                 }
                 curScores.put(startTime, curScores.getOrDefault(startTime, 0) + correct);
             } catch (NumberFormatException e) {
+                // If they didn't enter a number, no need to update scores.
             }
+
+        // If name param exists, this is a request to be added to the highscore list.
         } else if (name != null) {
+
+            // Create new entity on highscore list.
             Entity scoreEntity = new Entity("score");
             scoreEntity.setProperty("name", name);
             scoreEntity.setProperty("score", curScores.getOrDefault(startTime, 0));
             datastore.put(scoreEntity);
         }
+
+        // Send back the user's updated score.
         response.setContentType("text/plain");
         response.getWriter().println(curScores.getOrDefault(startTime, 0));
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        // Require start time so we know what client we are sending the question to.
         String startTimeStr = request.getParameter("start");
         if (startTimeStr == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
+
+        // Check if the start time is invalid.
         long startTime = Long.parseLong(startTimeStr);
         long time = System.currentTimeMillis();
         if (time - startTime > 60500 || time - startTime < -50) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
+
+        // Write back the question as a Base64 image (to prevent extraction of the question text).
         response.setContentType("text/plain");
         response.getWriter().println(textToBase64(getQuestion(startTime)));
     }
@@ -84,7 +112,6 @@ public class GameServlet extends HttpServlet {
         int type = (int) (Math.random() * 3);
         
         // Create addition, subtraction, or multiplication question.
-
         String question = null;
         int a, b;
         switch (type) {
@@ -108,6 +135,7 @@ public class GameServlet extends HttpServlet {
                 ans.put(startTime, a * b);
                 break;
         }
+        
         return question;
     }
     
