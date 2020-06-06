@@ -17,12 +17,13 @@ import java.awt.Graphics;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
+import java.util.HashMap;
 
-@WebServlet("/question")
-public class QuestionServlet extends HttpServlet {
+@WebServlet("/game")
+public class GameServlet extends HttpServlet {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private HashMap<Long, Integer> curScores = new HashMap<>();
-    private HashMap<Long, Integer> ans;
+    private HashMap<Long, Integer> ans = new HashMap<>();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -30,50 +31,50 @@ public class QuestionServlet extends HttpServlet {
         String userAnsStr = request.getParameter("ans");
         String name = request.getParameter("name");
         if (startTimeStr == null || (userAnsStr == null && name == null)) {
-            response.setError(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         long startTime = Long.parseLong(startTimeStr);
-        long time = System.currentTimeMillis();
-        if (time - startTime > 60000 || time - startTime < 0) {
-            response.setError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
         if (userAnsStr != null) {
+            long time = System.currentTimeMillis();
+            if (time - startTime > 60500 || time - startTime < -50) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
             try {
                 int userAns = Integer.parseInt(userAnsStr);
                 int correct = 0;
                 if (userAns == ans.getOrDefault(startTime, Integer.MIN_VALUE)) {
-                    corect = 1;
+                    correct = 1;
                 }
-                curScores.put(curScores.getOrDefault(startTime, 0) + correct);
+                curScores.put(startTime, curScores.getOrDefault(startTime, 0) + correct);
             } catch (NumberFormatException e) {
             }
         } else if (name != null) {
-            Entity score = new Entity("score");
-            entity.setProperty("name", name);
-            entity.setProperty("score", curScores.get(startTime, 0));
-            datastore.put(score);
+            Entity scoreEntity = new Entity("score");
+            scoreEntity.setProperty("name", name);
+            scoreEntity.setProperty("score", curScores.getOrDefault(startTime, 0));
+            datastore.put(scoreEntity);
         }
         response.setContentType("text/plain");
-        response.getWriter().println(curScores.get(startTime, 0));
+        response.getWriter().println(curScores.getOrDefault(startTime, 0));
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String startTimeStr = request.getParameter("start");
         if (startTimeStr == null) {
-            response.setError(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         long startTime = Long.parseLong(startTimeStr);
         long time = System.currentTimeMillis();
-        if (time - startTime > 60000 || time - startTime < 0) {
-            response.setError(HttpServletResponse.SC_BAD_REQUEST);
+        if (time - startTime > 60500 || time - startTime < -50) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         response.setContentType("text/plain");
-        response.getWriter().println(Base64(getQuestion(startTime)));
+        response.getWriter().println(textToBase64(getQuestion(startTime)));
     }
 
     // Generate a new question and set the answer instance variable.
@@ -107,7 +108,6 @@ public class QuestionServlet extends HttpServlet {
                 ans.put(startTime, a * b);
                 break;
         }
-        
         return question;
     }
     
