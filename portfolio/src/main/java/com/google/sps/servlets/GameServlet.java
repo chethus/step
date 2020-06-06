@@ -16,6 +16,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Base64;
 import java.util.HashMap;
 
@@ -89,9 +90,16 @@ public class GameServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        String fontConfig = System.getProperty("java.home")
+            + File.separator + "lib"
+            + File.separator + "fontconfig.Prodimage.properties";
+        if (new File(fontConfig).exists()) {
+            System.setProperty("sun.awt.fontconfig", fontConfig);
+        }
+
         // Require start time so we know what client we are sending the question to.
         String startTimeStr = request.getParameter("start");
-        if (startTimeStr == null) {
+        if (startTimeStr == null ) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
