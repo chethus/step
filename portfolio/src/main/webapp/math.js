@@ -64,9 +64,11 @@ async function gameOver() {
     submit.style.display = "none";
     const name = prompt("Enter your name into the field below to be put on the highscore list. \
     If you do not wish to be entered, leave the field blank");
-    const scoreRequest = new Request("game?start=" + startTime + "&name=" + name, {method: "POST"});
-    await fetch(scoreRequest);
-    loadScores();
+    if (name !== null) {
+        const scoreRequest = new Request("game?start=" + startTime + "&name=" + name, {method: "POST"});
+        await fetch(scoreRequest);
+        loadScores();
+    }
 }
 
 /**
