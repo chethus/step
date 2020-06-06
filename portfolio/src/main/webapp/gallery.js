@@ -58,7 +58,6 @@ function prevImage() {
 
 // Shuffles an array, used for image gallery.
 function shuffle(arr) {
-<<<<<<< HEAD
     // Number of unshuffled images at the front of the array.
     let lenLeft = arr.length;
     for (let i = lenLeft; i >= 0; i --) {
