@@ -87,7 +87,6 @@ async function loadScores() {
     // Get entry limit from form.
     const selectMax = document.getElementById("score-max");
     const maxScores = selectMax.options[selectMax.selectedIndex].value;
-    console.log(maxScores);
 
     let queryString = "max=" + maxScores;
     queryString += "&page=" + page;
@@ -96,8 +95,6 @@ async function loadScores() {
     const scoresJSON = await fetch("/scores?" + queryString);
     // Convert JSON to object.
     const scores = await scoresJSON.json();
-
-    console.log(scores);
 
     // Add all scores to score container.
     const container = document.getElementById("score-container");
