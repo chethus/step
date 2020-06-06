@@ -27,22 +27,21 @@ function randomFact() {
 async function loadComments() {
 
     // Check if page field is valid.
-    let page = $("#page").val();
+    let page = $("#comment-page").val();
     if (parseInt(page) != page || parseInt(page) <= 0) {
         alert("Invalid page");
-        $("#page").val(1);
+        $("#comment-page").val(1);
         page = 1;
     }
 
     // Get comment limit from form.
-    const selectMax = document.getElementById("select-max");
+    const selectMax = document.getElementById("comment-max");
     const maxComments = selectMax.options[selectMax.selectedIndex].value;
 
     let queryString = "max=" + maxComments;
     queryString += "&page=" + page;
   
     // Request JSON based on user comment limit.
-    console.log("/data?" + queryString);
     const commentsJSON = await fetch("/data?" + queryString);
     // Convert JSON to object.
     const comments = await commentsJSON.json();
@@ -142,7 +141,7 @@ function createP(text) {
  * Moves to next page of comments.
  */
 function nextPage() {
-    $("#page").val(parseInt($("#page").val()) + 1);
+    $("#comment-page").val(parseInt($("#comment-page").val()) + 1);
     loadComments();
 }
 
@@ -150,6 +149,6 @@ function nextPage() {
  * Moves to previous page of comments.
  */
 function prevPage() {
-    $("#page").val(parseInt($("#page").val()) - 1);
+    $("#comment-page").val(parseInt($("#comment-page").val()) - 1);
     loadComments();
 }

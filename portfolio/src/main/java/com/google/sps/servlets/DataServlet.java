@@ -57,8 +57,7 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-
+        
         // Get comment limit parameter.
         int max = Integer.parseInt(request.getParameter("max"));
 
@@ -67,7 +66,7 @@ public class DataServlet extends HttpServlet {
         try {
             page = Integer.parseInt(request.getParameter("page"));
         } catch (NumberFormatException e) {
-            response.setStatus(404);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         

@@ -75,6 +75,10 @@ public class GameServlet extends HttpServlet {
             scoreEntity.setProperty("name", name);
             scoreEntity.setProperty("score", curScores.getOrDefault(startTime, 0));
             datastore.put(scoreEntity);
+
+            // Remove entries from HashMaps to keep them small.
+            curScores.remove(startTime);
+            ans.remove(startTime);
         }
 
         // Send back the user's updated score.

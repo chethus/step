@@ -54,7 +54,7 @@ async function check() {
 }
 
 // Reset score, remove question screen, go back to intro screen.
-function gameOver() {
+async function gameOver() {
     scores.textContent = "Score: " + score;
     answer.value = "";
     instructions.style.display = "inline";
@@ -62,4 +62,87 @@ function gameOver() {
     question.style.display = "none";
     answer.style.display = "none";
     submit.style.display = "none";
+    const name = prompt("Enter your name into the field below to be put on the highscore list. \
+    If you do not wish to be entered, leave the field blank");
+    const scoreRequest = new Request("game?start=" + startTime + "&name=" + name, {method: "POST"});
+    await fetch(scoreRequest);
+    loadScores();
+}
+
+/**
+ * Fetches scores from the server and adds them to the DOM.
+ */
+async function loadScores() {
+
+    // Check if page field is valid.
+    let page = $("#score-page").val();
+    if (parseInt(page) != page || parseInt(page) <= 0) {
+        alert("Invalid page");
+        $("#score-page").val(1);
+        page = 1;
+    }
+
+    // Get entry limit from form.
+    const selectMax = document.getElementById("score-max");
+    const maxScores = selectMax.options[selectMax.selectedIndex].value;
+    console.log(maxScores);
+
+    let queryString = "max=" + maxScores;
+    queryString += "&page=" + page;
+  
+    // Request JSON based on user entry limit.
+    const scoresJSON = await fetch("/scores?" + queryString);
+    // Convert JSON to object.
+    const scores = await scoresJSON.json();
+
+    console.log(scores);
+
+    // Add all scores to score container.
+    const container = document.getElementById("score-container");
+    container.innerHTML = "";
+    scores.forEach(score => container.innerHTML += createScore(score).outerHTML);
+}
+
+$(document).ready(loadScores);
+
+function createScore(entry) {
+       
+    // Set up div for a score.
+    const scoreDiv = document.createElement("li");
+    scoreDiv.setAttribute("class", "score-entry");
+    scoreDiv.innerHTML = "";
+
+    // Add fields.
+    scoreDiv.appendChild(createSpan(entry.rank + ". " + entry.name));
+
+    const score = createSpan(entry.score);
+    score.setAttribute("class", "score");
+    scoreDiv.appendChild(score);
+
+    return scoreDiv;
+}
+
+/**
+ * Create a paragraph with the given text.
+ */
+function createSpan(text) {
+    const span = document.createElement("span");
+    span.textContent = text;
+    return span;
+}
+
+/**
+ * Moves to next page of scores.
+ */
+function nextPage() {
+    $("#score-page").val(parseInt($("#score-page").val()) + 1);
+    loadScores();
+}
+
+/**
+ * Moves to previous page of scores.
+ */
+function prevPage() {
+    $("#score-page").val(parseInt($("#score-page").val()) - 1);
+    loadScores();
 }
