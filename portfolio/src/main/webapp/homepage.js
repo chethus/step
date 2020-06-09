@@ -55,6 +55,27 @@ async function loadComments() {
 $(document).ready(loadComments);
 
 /**
+ * Load comment form based on login status.
+ */
+async function loadCommentForm() {
+
+    // Request user information from server.
+    const responseJSON = await fetch("/user");
+    const response = await responseJSON.json();
+    
+    // If the user is not logged in, the server responds with a login url.
+    if (typeof response === "string") {
+        $("login").css("display", "inline-block");
+        loginBtn.setAttribute("onclick","location.href=\"" + response + "\"");
+    } else {
+        $("#comment-form").css("display", "block");
+        $("#comment-submit").css("display", "inline-block");
+    }
+}
+
+$(document).ready(loadCommentForm);
+
+/**
  * Create a list entry with the given text.
  */
 function createComment(comment) {

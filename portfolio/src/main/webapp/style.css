@@ -149,7 +149,16 @@ button, select {
     margin: auto;
 }
 
+.login {
+    display: none;
+}
+
+#comment-form {
+    display: none;
+}
+
 #comment-submit {
+    display: none;
     background-color: green;
     color: white;
     margin: 10px;
