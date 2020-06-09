@@ -1,5 +1,6 @@
 package com.google.sps.data;
 
+// Class for storing user information (will use later for nicknames).
 public class User {
     private String email;
     private String nickname = null;

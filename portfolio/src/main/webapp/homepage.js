@@ -65,9 +65,13 @@ async function loadCommentForm() {
     
     // If the user is not logged in, the server responds with a login url.
     if (typeof response === "string") {
+
+        // Unhide a login button with the login url.
         $("login").css("display", "inline-block");
         loginBtn.setAttribute("onclick","location.href=\"" + response + "\"");
     } else {
+
+        // Otherwise, unhide the comment form.
         $("#comment-form").css("display", "block");
         $("#comment-submit").css("display", "inline-block");
     }
