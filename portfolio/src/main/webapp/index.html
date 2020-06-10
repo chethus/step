@@ -48,9 +48,11 @@
     <!-- Form for submitting comments via POST request and returning their IDs -->
     <div id="form-container">
         <!-- Comment form his hidden unless user is logged in -->
-        <form id="comment-form">
+        <form id="comment-form" enctype="multipart/form-data">
             <label for="text">Text&nbsp;</label>
-            <input type="textarea" id="text" name="text">
+            <input type="textarea" id="text" name="text"><br>
+            <label for="image">Image&nbsp;</label>
+            <input type="file" name="image">
         </form>
         <div class="center">
             <!-- Display submit button if logged in, otherwise, display login button -->

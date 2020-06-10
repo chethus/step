@@ -15,29 +15,48 @@
 package com.google.sps.servlets;
 
 import com.google.sps.data.Comment;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
+
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
+
 import com.google.gson.Gson;
+import java.net.URL;
+import java.util.Map;
+import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.net.MalformedURLException;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/comments")
-public class CommentServlet extends HttpServlet {
+public class CommentsServlet extends HttpServlet {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private UserService userService = UserServiceFactory.getUserService();
+    private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    private ImagesService imagesService = ImagesServiceFactory.getImagesService();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -66,11 +85,12 @@ public class CommentServlet extends HttpServlet {
             commentEntity.setProperty("nickname", nickname);
             commentEntity.setProperty("timestamp", System.currentTimeMillis());
             commentEntity.setProperty("text", text);
+            commentEntity.setProperty("imageSrc", getFileUrl(request, "image"));
             datastore.put(commentEntity);
 
             // Return the comment ID.
             Gson gson = new Gson();
-            response.setContentType("text/plain");
+            response.setContentType("text/html");
             response.getWriter().println(commentEntity.getKey().getId());
         }
     }
@@ -108,5 +128,37 @@ public class CommentServlet extends HttpServlet {
         Gson gson = new Gson();
         response.setContentType("application/json");
         response.getWriter().println(gson.toJson(comments));
+    }
+
+    /** Returns file URL or null if no file was uploaded. */
+    public String getFileUrl(HttpServletRequest request, String formElementName) {
+        Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+        List<BlobKey> blobKeys = blobs.get(formElementName);
+
+        // If no file was uploaded, there is no URL to return.
+        if (blobKeys == null || blobKeys.isEmpty()) {
+            return null;
+        }
+
+        // We are assuming there is only one image so we get the first key.
+        BlobKey blobKey = blobKeys.get(0);
+
+        BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKey);
+
+        // If no uploaded file on live server, return null URL.
+        if (blobInfo.getSize() == 0) {
+            blobstoreService.delete(blobKey);
+            return null;
+        }
+
+        ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
+
+        // Return URL with relative path of ImagesService URL if possible.
+        try {
+            URL url = new URL(imagesService.getServingUrl(options));
+            return url.getPath();
+        } catch (MalformedURLException e) {
+            return imagesService.getServingUrl(options);
+        }
     }
 }

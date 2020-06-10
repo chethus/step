@@ -58,7 +58,8 @@ $(document).ready(loadComments);
  * Create a list entry with the given text.
  */
 function createComment(comment) {
-    
+
+    console.log(comment);
     // Set up div for a comment.
     const commentDiv = document.createElement("li");
     commentDiv.setAttribute("class", "comment");
@@ -70,8 +71,21 @@ function createComment(comment) {
     commentDiv.appendChild(nickname);
     commentDiv.appendChild(createP(comment.text));
 
+    if (comment.imageSrc != null) {
+        const img = document.createElement("image");
+        img.setAttribute("src", comment.imageSrc);
+        commentDiv.appendChild(img);
+    }
+
     return commentDiv;
 }
+
+async function loadForm() {
+    const responseUrl = await fetch("/blobstore-upload-url");
+    const urlText = await responseUrl.text();
+    $("#comment-form").attr("action", urlText);
+}
+$(document).ready(loadForm);
 
 /**
  * Sends a Comment using a POST request and receives the Comment ID.
@@ -80,8 +94,10 @@ async function submitComment() {
 
     // Make request from data in Comment form.
     const commentForm = document.getElementById("comment-form");
-    const formData = (new URLSearchParams(new FormData(commentForm))).toString();
-    const request = new Request("/comments?" + formData, {method: "POST"});
+    const formData = new FormData(commentForm);
+    const responseUrl = await fetch("/blobstore-upload-url");
+    const urlText = await responseUrl.text();
+    const request = new Request(urlText, {method: "POST", body: formData});
 
     // Reset Comment form and get response from request.
     commentForm.reset();

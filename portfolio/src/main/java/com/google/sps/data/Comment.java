@@ -10,6 +10,7 @@ public class Comment {
     private String nickname;
     private String text;
     private long timestamp;
+    private String imageSrc;
 
     /**
      * No argument constructor.
@@ -18,10 +19,11 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String nickname, String text) {
+    public Comment(String nickname, String text, String imageSrc) {
         this.timestamp = System.currentTimeMillis();
         this.nickname = nickname;
         this.text = text;
+        this.imageSrc = imageSrc;
     }
 
 
@@ -49,6 +51,14 @@ public class Comment {
         this.text = text;
     }
 
+    public String getImageSrc() {
+        return imageSrc;
+    }
+
+    public void setImageSrc(String imageSrc) {
+        this.imageSrc = imageSrc;
+    }
+
     /**
      * Creates a Comment from a Datastore entity.
     */
@@ -57,6 +67,7 @@ public class Comment {
         c.setTimestamp((long) entity.getProperty("timestamp"));
         c.setNickname((String) entity.getProperty("nickname"));
         c.setText((String) entity.getProperty("text"));
+        c.setImageSrc((String) entity.getProperty("imageSrc"));
         return c;
     }
 }
