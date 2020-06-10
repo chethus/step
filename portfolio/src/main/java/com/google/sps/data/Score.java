@@ -7,7 +7,7 @@ import com.google.appengine.api.datastore.Entity;
  * A class for storing a Score.
  */
 public class Score {
-    private String name;
+    private String nickname;
     private int score;
     private int rank;
 
@@ -18,18 +18,18 @@ public class Score {
     public Score() {
     }
 
-    public Score(String name, int score, int rank) {
-        this.name = name;
+    public Score(String nickname, int score, int rank) {
+        this.nickname = nickname;
         this.score = score;
         this.rank = rank;
     }
 
-    public String getName() {
-        return name;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public int getScore() {
@@ -54,7 +54,7 @@ public class Score {
     */
     public static Score makeScore(Entity entity, int rank) {
         Score s = new Score();
-        s.setName((String) entity.getProperty("name"));
+        s.setNickname((String) entity.getProperty("nickname"));
         s.setScore(Integer.parseInt(entity.getProperty("score").toString()));
         s.setRank(rank);
         return s;

@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -23,6 +25,7 @@ import java.util.HashMap;
 @WebServlet("/game")
 public class GameServlet extends HttpServlet {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private UserService userService = UserServiceFactory.getUserService();
 
     // Scores of games currently in progress.
     private HashMap<Long, Integer> curScores = new HashMap<>();
@@ -33,18 +36,25 @@ public class GameServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        if (!userService.isUserLoggedIn()) {
+            String loginUrl = userService.createLoginURL("/index.html");
+            response.sendRedirect(loginUrl);
+            return;
+        }
+
         // Load request params into strings.
         String startTimeStr = request.getParameter("start");
         String userAnsStr = request.getParameter("ans");
-        String name = request.getParameter("name");
 
-        // A post request must have a game start time and either an answer or username (for the highscore list).
-        if (startTimeStr == null || (userAnsStr == null && name == null)) {
+        // A post request must have a game start time.
+        if (startTimeStr == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         long startTime = Long.parseLong(startTimeStr);
+        
+        // If they are answering a question.
         if (userAnsStr != null) {
 
             // Error if the game is over or if the start time is in the future (modulo some error).
@@ -69,11 +79,24 @@ public class GameServlet extends HttpServlet {
             }
 
         // If name param exists, this is a request to be added to the highscore list.
-        } else if (name != null) {
+        } else {
+
+            // Get the user's nickname for the highscore list.
+            String userId = userService.getCurrentUser().getUserId();
+            String nickname = userService.getCurrentUser().getNickname();
+            Query query = new Query("user").setFilter(
+                new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+            PreparedQuery results = datastore.prepare(query);
+            Entity entity = results.asSingleEntity();
+            if (entity != null) {
+                nickname = (String) entity.getProperty("nickname");
+            }
 
             // Create new entity on highscore list.
             Entity scoreEntity = new Entity("score");
-            scoreEntity.setProperty("name", name);
+            scoreEntity.setProperty("nickname", nickname);
+            scoreEntity.setProperty("time", System.currentTimeMillis());
+            scoreEntity.setProperty("userId", userId);
             scoreEntity.setProperty("score", curScores.getOrDefault(startTime, 0));
             datastore.put(scoreEntity);
 
@@ -89,6 +112,12 @@ public class GameServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        if (!userService.isUserLoggedIn()) {
+            String loginUrl = userService.createLoginURL("/index.html");
+            response.sendRedirect(loginUrl);
+            return;
+        }
 
         String fontConfig = System.getProperty("java.home")
             + File.separator + "lib"

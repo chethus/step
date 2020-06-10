@@ -62,10 +62,9 @@ async function gameOver() {
     question.style.display = "none";
     answer.style.display = "none";
     submit.style.display = "none";
-    const name = prompt("Enter your name into the field below to be put on the highscore list. "
-    + "If you do not wish to be entered, leave the field blank.");
-    if (name !== null && name.length > 0) {
-        const scoreRequest = new Request("game?start=" + startTime + "&name=" + name, {method: "POST"});
+    const addScore = confirm("Click OK to be added to the highscore list.");
+    if (addScore) {
+        const scoreRequest = new Request("game?start=" + startTime, {method: "POST"});
         await fetch(scoreRequest);
         loadScores();
     }
@@ -112,7 +111,7 @@ function createScore(entry) {
     scoreDiv.innerHTML = "";
 
     // Add fields.
-    scoreDiv.appendChild(createSpan(entry.rank + ". " + entry.name));
+    scoreDiv.appendChild(createSpan(entry.rank + ". " + entry.nickname));
 
     const score = createSpan(entry.score);
     score.setAttribute("class", "score");

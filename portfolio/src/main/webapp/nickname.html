@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="en-US">
     <head>
-        <meta charset="utf-8">
+        <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title> Chet's Gallery </title>
+        <title>Chet's Portfolio</title>
         <link rel="stylesheet" href="style.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="common.js"></script>
-        <script src="gallery.js"></script>
+        <script src="nickname.js"></script>
     </head>
     <body>
         <ul class="navbar">
             <li><a href="index.html">About</a></li>
             <li><a href="projects.html">Projects</a></li>
-            <li class="active"><a href="gallery.html">Gallery</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
             <li><a href="math.html">Math&nbsp;Game</a></li>
             <li id="logout-nav-btn"><a id="logout-nav-link">Logout</a></li>
-            <li id="login-nav-btn"><a id="login-nav-link">Login</a></li>
-            <li id="nickname-nav-btn">
+            <li id="login-nav-btn"><a id="login-nav-link">Login</a><li>
+            <li id="nickname-nav-btn" class="active">
                 <a id="nickname-nav-link" href="nickname.html">Set Display Name</a>
             </li>
         </ul>
-        <h1> Gallery </h1>
-        <!-- Image and caption set by Javascript -->
-        <img id="gallery" src=""/>
-        <p id="caption">&nbsp;</p>
-        <!-- Center the back and forward buttons with some space between -->
-        <div class="flex-center">
-            <button class="gallerybtn" onclick="prevImage()">&lt;</button>
-            <button class="gallerybtn" onclick="nextImage()">&gt;</button>
+    <h1>Set Display Name</h1>
+    <div id="nickname-container">
+        <!-- Form his hidden unless logged in -->
+        <form id="nickname-form">
+            <label for="nickname">Display Name&nbsp;</label>
+            <input type="text" id="nickname" name="nickname">
+        </form>
+        <div class="center">
+            <button id="nickname-submit" onclick="submitNickname()">Submit</button>
         </div>
-    </body>
-</html>
+    </div>
+    

@@ -42,7 +42,7 @@ async function loadComments() {
     queryString += "&page=" + page;
   
     // Request JSON based on user comment limit.
-    const commentsJSON = await fetch("/data?" + queryString);
+    const commentsJSON = await fetch("/comments?" + queryString);
     // Convert JSON to object.
     const comments = await commentsJSON.json();
 
@@ -55,31 +55,6 @@ async function loadComments() {
 $(document).ready(loadComments);
 
 /**
- * Load comment form based on login status.
- */
-async function loadCommentForm() {
-
-    // Request user information from server.
-    const responseJSON = await fetch("/user");
-    const response = await responseJSON.json();
-    
-    // If the user is not logged in, the server responds with a login url.
-    if (typeof response === "string") {
-
-        // Unhide a login button with the login url.
-        $("login").css("display", "inline-block");
-        loginBtn.setAttribute("onclick","location.href=\"" + response + "\"");
-    } else {
-
-        // Otherwise, unhide the comment form.
-        $("#comment-form").css("display", "block");
-        $("#comment-submit").css("display", "inline-block");
-    }
-}
-
-$(document).ready(loadCommentForm);
-
-/**
  * Create a list entry with the given text.
  */
 function createComment(comment) {
@@ -89,10 +64,10 @@ function createComment(comment) {
     commentDiv.setAttribute("class", "comment");
     commentDiv.innerHTML = "";
 
-    // Add paragraphs for author and comment text.
-    const author = createP(comment.author);
-    author.setAttribute("class", "name");
-    commentDiv.appendChild(author);
+    // Add paragraphs for nickname and comment text.
+    const nickname = createP(comment.nickname);
+    nickname.setAttribute("class", "nickname");
+    commentDiv.appendChild(nickname);
     commentDiv.appendChild(createP(comment.text));
 
     return commentDiv;
@@ -106,7 +81,7 @@ async function submitComment() {
     // Make request from data in Comment form.
     const commentForm = document.getElementById("comment-form");
     const formData = (new URLSearchParams(new FormData(commentForm))).toString();
-    const request = new Request("/data?" + formData, {method: "POST"});
+    const request = new Request("/comments?" + formData, {method: "POST"});
 
     // Reset Comment form and get response from request.
     commentForm.reset();

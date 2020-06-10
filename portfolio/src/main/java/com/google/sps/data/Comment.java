@@ -7,7 +7,7 @@ import com.google.appengine.api.datastore.Entity;
  * A class for storing a Comment.
  */
 public class Comment {
-    private String author;
+    private String nickname;
     private String text;
     private long timestamp;
 
@@ -16,30 +16,29 @@ public class Comment {
      * Set fields with setter methods.
      */
     public Comment() {
-        this.timestamp = System.currentTimeMillis();
     }
 
-    public Comment(String author, String text) {
-        this();
-        this.author = author;
+    public Comment(String nickname, String text) {
+        this.timestamp = System.currentTimeMillis();
+        this.nickname = nickname;
         this.text = text;
     }
 
 
     public long getTimestamp() {
-        return System.currentTimeMillis();
+        return timestamp;
     }
 
     public void setTimestamp(long time) {
         this.timestamp = time;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getNickname() {
+        return nickname;
     }
     
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getText() {
@@ -51,28 +50,12 @@ public class Comment {
     }
 
     /**
-     * Returns a Comment from a request.
-     * Fills in appropriate defaults if attributes are null.
-     */
-    public static Comment makeComment(HttpServletRequest request) {
-        Comment c = new Comment();
-        c.setAuthor(request.getParameter("author"));
-        if (c.getAuthor() == null || c.getAuthor().length() == 0) {
-            c.setAuthor("Anonymous");
-        }
-        c.setText(request.getParameter("text"));
-        if (c.getText() == null) {
-            c.setText("");
-        }
-        return c;
-    }
-
-    /**
      * Creates a Comment from a Datastore entity.
     */
     public static Comment makeComment(Entity entity) {
         Comment c = new Comment();
-        c.setAuthor((String) entity.getProperty("author"));
+        c.setTimestamp((long) entity.getProperty("timestamp"));
+        c.setNickname((String) entity.getProperty("nickname"));
         c.setText((String) entity.getProperty("text"));
         return c;
     }

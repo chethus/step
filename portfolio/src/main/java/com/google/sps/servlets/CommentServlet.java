@@ -17,6 +17,8 @@ package com.google.sps.servlets;
 import com.google.sps.data.Comment;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
@@ -32,27 +34,45 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
-@WebServlet("/data")
-public class DataServlet extends HttpServlet {
+@WebServlet("/comments")
+public class CommentServlet extends HttpServlet {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private UserService userService = UserServiceFactory.getUserService();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         
-        // Create Comment from request.
-        Comment c = Comment.makeComment(request);
+        if (!userService.isUserLoggedIn()) {
+            String loginUrl = userService.createLoginURL("/index.html");
+            response.sendRedirect(loginUrl);
+        } else {
 
-        // Set properties in Datastore entity.
-        Entity commentEntity = new Entity("comment");
-        commentEntity.setProperty("timestamp", c.getTimestamp());
-        commentEntity.setProperty("author", c.getAuthor());
-        commentEntity.setProperty("text", c.getText());
-        datastore.put(commentEntity);
+            // Get comment text.
+            String text = request.getParameter("text");
 
-        // Return the comment ID.
-        Gson gson = new Gson();
-        response.setContentType("text/plain");
-        response.getWriter().println(commentEntity.getKey().getId());
+            // Find userId and user nickname.
+            String userId = userService.getCurrentUser().getUserId();
+            String nickname = userService.getCurrentUser().getNickname();
+            Query query = new Query("user").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
+            PreparedQuery results = datastore.prepare(query);
+            Entity entity = results.asSingleEntity();
+            if (entity != null) {
+                nickname = (String) entity.getProperty("nickname");
+            }
+
+            // Set properties in Datastore entity.
+            Entity commentEntity = new Entity("comment");
+            commentEntity.setProperty("userId", userId);
+            commentEntity.setProperty("nickname", nickname);
+            commentEntity.setProperty("timestamp", System.currentTimeMillis());
+            commentEntity.setProperty("text", text);
+            datastore.put(commentEntity);
+
+            // Return the comment ID.
+            Gson gson = new Gson();
+            response.setContentType("text/plain");
+            response.getWriter().println(commentEntity.getKey().getId());
+        }
     }
 
     @Override

@@ -40,6 +40,19 @@ p {
     color: white;
 }
 
+
+#login-nav-btn, #logout-nav-btn, #nickname-nav-btn {
+    float: right;
+}
+
+#login-nav-link, #logout-nav-link, #nickname-nav-link {
+    display: none;
+}
+
+#login {
+    display: none;
+}
+
 .active {
     background-color: dodgerblue;
 }
@@ -117,7 +130,7 @@ button, select {
 }
 
 #start {
-    display: inline-block;
+    display: none;
 }
 
 #question {
@@ -143,7 +156,7 @@ button, select {
     display: none;
 }
 
-#form-container, #delete-container {
+#form-container, #delete-container, #nickname-container {
     align-items: left;
     max-width: 25vw;
     margin: auto;
@@ -153,11 +166,11 @@ button, select {
     display: none;
 }
 
-#comment-form {
+#comment-form, #nickname-form {
     display: none;
 }
 
-#comment-submit {
+#comment-submit, #nickname-submit {
     display: none;
     background-color: green;
     color: white;
@@ -190,7 +203,7 @@ button, select {
     border: thin dotted #EEE;
 }
 
-.name {
+.nickname {
     color: dodgerblue;
 }
 
