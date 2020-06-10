@@ -59,7 +59,6 @@ $(document).ready(loadComments);
  */
 function createComment(comment) {
 
-    console.log(comment);
     // Set up div for a comment.
     const commentDiv = document.createElement("li");
     commentDiv.setAttribute("class", "comment");
