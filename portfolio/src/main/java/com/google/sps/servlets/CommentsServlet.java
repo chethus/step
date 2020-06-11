@@ -135,7 +135,7 @@ public class CommentsServlet extends HttpServlet {
 
         for (Entity entity : results.asIterable(options)) {
             Comment c = Comment.makeComment(entity);
-            if (userId.equals((String)entity.getProperty("userId"))) {
+            if (userId != null && userId.equals((String)entity.getProperty("userId"))) {
                 c = new OwnComment(c, entity.getKey().getId());
             }
             comments.add(c);
