@@ -59,6 +59,7 @@ $(document).ready(loadComments);
  */
 function createComment(comment) {
 
+    console.log(comment);
     // Set up div for a comment.
     const commentDiv = document.createElement("li");
     commentDiv.setAttribute("class", "comment");
@@ -74,6 +75,15 @@ function createComment(comment) {
         const img = document.createElement("image");
         img.setAttribute("src", comment.imageSrc);
         commentDiv.appendChild(img);
+    }
+
+    if (comment.hasOwnProperty("commentId")) {
+        commentDiv.setAttribute("id", "comment-" + comment.commentId);
+        const deleteBtn = document.createElement("button");
+        deleteBtn.setAttribute("onclick", "deleteComment(" + comment.commentId + ")");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.style.display = "block";
+        commentDiv.appendChild(deleteBtn);
     }
 
     return commentDiv;
@@ -104,12 +114,6 @@ async function submitComment() {
 
     // Update comments with new comment.
     loadComments();
-
-    // Provide user with their comment ID.
-    const responseText = await response.text();
-    let message = "Your comment ID is below. ";
-    message += "Copy this to delete your comment later.";
-    prompt(message, responseText);
 }
 
 /**
@@ -124,21 +128,16 @@ async function deleteAll() {
 }
 
 /**
- * Deletes a Comment using the Comment ID in the delete form.
+ * Deletes a Comment given a Comment ID.
  */
-async function deleteComment() {
+async function deleteComment(commentId) {
 
-    // Extract delete form data into request.
-    const deleteForm = document.getElementById("delete-form");
-    const formData = (new URLSearchParams(new FormData(deleteForm))).toString();
-    const request = new Request("/delete?" + formData, {method: "POST"});
-    
-    deleteForm.reset();
+    const request = new Request("/delete?id=" + commentId, {method: "POST"});
 
     // Check response status and update comments.
     const response = await fetch(request);
     if (response.status === 500) {
-        alert("Comment ID not found");
+        alert("Comment not found");
     }
     loadComments();
 }

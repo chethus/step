@@ -52,6 +52,8 @@ public class DeleteServlet extends HttpServlet {
             } catch (EntityNotFoundException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
+        }
+        /**
         } else {
 
             // Query for and delete all comments.
@@ -61,5 +63,6 @@ public class DeleteServlet extends HttpServlet {
                 datastore.delete(entity.getKey());
             }
         }
+        */
     }
 }

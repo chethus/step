@@ -60,21 +60,9 @@
             <button id="comment-submit" onclick="submitComment()">Submit</button>
         </div>
     </div>
-    <!-- Form for deleting a specific coment -->
-    <h1>Delete A Comment</h1>
-    <div id="delete-container">
-        <form id="delete-form">
-            <label for="id">Comment ID&nbsp;</label>
-            <input type="text" id="id" name="id"><br>
-        </form>
-        <div class="center">
-            <button onclick="deleteComment()">Submit</button>
-        </div>
-    </div>
     <h1>Comments</h1>
     <!-- Comment display options -->
     <div class="flex-center">
-        <button onclick=deleteAll()>Delete All</button>
         <button onclick="prevPage()">&lt;</button>
         <input id="comment-page" class="page" onchange="loadComments()" type="text" value="1">
         <button onclick="nextPage()">&gt;</button>

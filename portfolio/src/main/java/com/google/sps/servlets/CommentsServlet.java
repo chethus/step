@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.sps.data.Comment;
+import com.google.sps.data.OwnComment;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -87,17 +88,18 @@ public class CommentsServlet extends HttpServlet {
             commentEntity.setProperty("text", text);
             commentEntity.setProperty("imageSrc", getFileUrl(request, "image"));
             datastore.put(commentEntity);
-
-            // Return the comment ID.
-            Gson gson = new Gson();
-            response.setContentType("text/html");
-            response.getWriter().println(commentEntity.getKey().getId());
         }
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
+
+        // If a user is logged in, get their id.
+        String userId = null;
+        if (userService.isUserLoggedIn()) {
+            userId = userService.getCurrentUser().getUserId();
+        }
+
         // Get comment limit parameter.
         int max = Integer.parseInt(request.getParameter("max"));
 
@@ -121,7 +123,11 @@ public class CommentsServlet extends HttpServlet {
         options.offset((page - 1) * max);
 
         for (Entity entity : results.asIterable(options)) {
-            comments.add(Comment.makeComment(entity));
+            Comment c = Comment.makeComment(entity);
+            if (userId.equals((String)entity.getProperty("userId"))) {
+                c = new OwnComment(c, entity.getKey().getId());
+            }
+            comments.add(c);
         }
 
         // Send JSON back to site.
