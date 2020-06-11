@@ -30,6 +30,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -60,7 +62,7 @@ public class CommentsServlet extends HttpServlet {
     private ImagesService imagesService = ImagesServiceFactory.getImagesService();
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException{
         
         if (!userService.isUserLoggedIn()) {
             String loginUrl = userService.createLoginURL("/index.html");
@@ -82,6 +84,15 @@ public class CommentsServlet extends HttpServlet {
 
             // Set properties in Datastore entity.
             Entity commentEntity = new Entity("comment");
+            if (request.getParameter("commentId") != null) {
+                long commentId = Long.parseLong(request.getParameter("commentId"));
+                Key k = KeyFactory.createKey("comment", commentId);
+                try {
+                    commentEntity = datastore.get(k);
+                } catch (EntityNotFoundException e) {
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
+            }
             commentEntity.setProperty("userId", userId);
             commentEntity.setProperty("nickname", nickname);
             commentEntity.setProperty("timestamp", System.currentTimeMillis());

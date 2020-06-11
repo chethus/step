@@ -59,56 +59,47 @@ $(document).ready(loadComments);
  */
 function createComment(comment) {
 
-    console.log(comment);
     // Set up div for a comment.
     const commentDiv = document.createElement("li");
     commentDiv.setAttribute("class", "comment");
-    commentDiv.innerHTML = "";
 
-    // Add paragraphs for nickname and comment text.
-    const nickname = createP(comment.nickname);
-    nickname.setAttribute("class", "nickname");
-    commentDiv.appendChild(nickname);
-    commentDiv.appendChild(createP(comment.text));
+    // Add nickname and comment text.
+    commentDiv.innerHTML = `
+    <p class="nickname">` + comment.nickname + `</p>
+    <p>` + comment.text + `</p>`
 
+    // If the comment has an image, add it.
     if (comment.imageSrc != null) {
-        const img = document.createElement("image");
-        img.setAttribute("src", comment.imageSrc);
-        commentDiv.appendChild(img);
+        commentDiv.innerHTML += `<img src="` + comment.imageSrc + `">`
     }
 
+    // If the comment has an id (it is the user's own comment), allow the user to edit and delete it.
     if (comment.hasOwnProperty("commentId")) {
         commentDiv.setAttribute("id", "comment-" + comment.commentId);
-        const deleteBtn = document.createElement("button");
-        deleteBtn.setAttribute("onclick", "deleteComment(" + comment.commentId + ")");
-        deleteBtn.textContent = "Delete";
-        deleteBtn.style.display = "block";
-        commentDiv.appendChild(deleteBtn);
+        commentDiv.innerHTML += `<br/>
+        <button onclick=editComment(` + comment.commentId + `)>Edit</button>
+        <button onclick=deleteComment(` + comment.commentId + `)>Delete</button>`;
     }
 
     return commentDiv;
 }
 
-async function loadForm() {
-    const responseUrl = await fetch("/blobstore-upload-url");
-    const urlText = await responseUrl.text();
-    $("#comment-form").attr("action", urlText);
-}
-$(document).ready(loadForm);
-
 /**
- * Sends a Comment using a POST request and receives the Comment ID.
+ * Sends a comment using a POST request and receives the comment ID.
  */
 async function submitComment() {
 
-    // Make request from data in Comment form.
+    // Make request from data in comment form.
     const commentForm = document.getElementById("comment-form");
     const formData = new FormData(commentForm);
+
+    // Get request URL for the image from blobstore.
     const responseUrl = await fetch("/blobstore-upload-url");
     const urlText = await responseUrl.text();
+
     const request = new Request(urlText, {method: "POST", body: formData});
 
-    // Reset Comment form and get response from request.
+    // Reset comment form and get response from request.
     commentForm.reset();
     const response = await fetch(request);
 
@@ -117,18 +108,7 @@ async function submitComment() {
 }
 
 /**
- * Delete all comments and update the page.
- */
-async function deleteAll() {
-
-    // Send a request to DeleteServlet and reload comments.
-    const request = new Request("/delete", {method: "POST"});
-    const response = await fetch(request);
-    loadComments();
-}
-
-/**
- * Deletes a Comment given a Comment ID.
+ * Deletes a comment given a comment ID.
  */
 async function deleteComment(commentId) {
 
@@ -139,6 +119,53 @@ async function deleteComment(commentId) {
     if (response.status === 500) {
         alert("Comment not found");
     }
+    loadComments();
+}
+
+/**
+ * Edit a comment given a comment ID.
+ */
+async function editComment(commentId) {
+
+    // Find the appropriate comment.
+    const commentDiv = document.getElementById("comment-" + commentId);
+
+    // Get the original text.
+    const originalText = commentDiv.children[1].textContent;
+
+    // Create the edit form with a submit button.
+    commentDiv.innerHTML = `
+    <form enctype="multipart/form-data">
+        <label for="text">Text&nbsp;</label>
+        <input type="text" name="text" value="` + originalText + `"><br/>
+        <label for="image">Image&nbsp; </label>
+        <input type="file" name="image">
+    </form>
+    <button onclick=submitEdit(` + commentId + `)>Submit</button>
+    <button onclick=loadComments()>Cancel</button>`
+}
+
+/**
+ * Submit an edited comment.
+ */
+async function submitEdit(commentId) {
+
+    // Get the relevant comment.
+    const commentDiv = document.getElementById("comment-" + commentId);
+
+    // Get the form data from the edit form and append the comment's ID.
+    const editForm = commentDiv.children[0];
+    const formData = new FormData(editForm);
+    formData.append("commentId", commentId);
+
+    // Get the image upload URL from blobstore.
+    const responseUrl = await fetch("/blobstore-upload-url");
+    const urlText = await responseUrl.text();
+
+    const request = new Request(urlText, {method: "POST", body: formData});
+    const response = await fetch(request);
+
+    // Update comments with new comment.
     loadComments();
 }
 
