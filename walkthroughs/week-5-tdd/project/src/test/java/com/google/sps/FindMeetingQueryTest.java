@@ -276,6 +276,7 @@ public final class FindMeetingQueryTest {
 
   @Test
   public void optionalAllDay() {
+    // Ignore an optional attendee with an all-day event.
 
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartDuration(TIME_0800AM, DURATION_30_MINUTES),
@@ -295,11 +296,12 @@ public final class FindMeetingQueryTest {
             TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, false),
             TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, true));
 
-    //Assert.assertEquals(expected, actual);
+    Assert.assertEquals(expected, actual);
   }
 
   @Test
   public void optionalAttendeeConsidered() {
+    // Consider an optional attendee with a conflict during one of the windows.
 
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartDuration(TIME_0800AM, DURATION_30_MINUTES),
@@ -323,12 +325,7 @@ public final class FindMeetingQueryTest {
 
   @Test
   public void optionalAttendeeIgnored() {
-    // Have one person, but make it so that there is just enough room at one point in the day to
-    // have the meeting.
-    //
-    // Events  : |--A--|     |----A----|
-    // Day     : |---------------------|
-    // Options :       |-----|
+    // Ignore an optional attendee who cannot make the mandatory time window.
 
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, false),
@@ -350,6 +347,7 @@ public final class FindMeetingQueryTest {
 
   @Test
   public void optionalSomeGaps() {
+    // Identify all available gaps for optional attendees.
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartDuration(TIME_0900AM, DURATION_60_MINUTES),
             Arrays.asList(PERSON_A)),
@@ -369,6 +367,7 @@ public final class FindMeetingQueryTest {
 
   @Test
   public void optionalNoGaps() {
+    // If there are no available times for optional attendees and no mandatory attendees, return no ranges.
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_1200PM, true),
             Arrays.asList(PERSON_A)),
