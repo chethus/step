@@ -44,11 +44,11 @@ public class Comment {
         this.author = author;
     }
 
-    public String getID() {
+    public String getId() {
         return id;
     }
 
-    public void setID(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -66,18 +66,9 @@ public class Comment {
      */
     public static Comment makeComment(HttpServletRequest request) {
         Comment c = new Comment();
-        c.setAuthor(request.getParameter("author"));
-        if (c.getAuthor() == null || c.getAuthor().length() == 0) {
-            c.setAuthor("Anonymous");
-        }
-        c.setID(request.getParameter("id"));
-        if (c.getID() == null || c.getID().length() == 0) {
-            c.setID(String.valueOf(System.currentTimeMillis()));
-        }
-        c.setText(request.getParameter("text"));
-        if (c.getText() == null) {
-            c.setText("");
-        }
+        c.setAuthor(getParamOrDefault(request, "author", "Anonymous"));
+        c.setId(getParamOrDefault(request, "id", System.currentTimeMillis() + ""));
+        c.setText(getParamOrDefault(request, "text", ""));
         return c;
     }
 
@@ -87,8 +78,19 @@ public class Comment {
     public static Comment makeComment(Entity entity) {
         Comment c = new Comment();
         c.setAuthor((String) entity.getProperty("author"));
-        c.setID((String) entity.getProperty("id"));
+        c.setId((String) entity.getProperty("id"));
         c.setText((String) entity.getProperty("text"));
         return c;
+    }
+    /*
+     * Gets a the parameter's value from the request or a default value if the request 
+     * does not contain the parameter.
+     */
+    private static String getParamOrDefault(HttpServletRequest request, String paramName, String revert) {
+        final String paramValue = request.getParameter(paramName);
+        if (paramValue == null) {
+            return revert;
+        }
+        return paramValue;
     }
 }
