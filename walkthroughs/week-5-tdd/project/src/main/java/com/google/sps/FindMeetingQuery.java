@@ -22,36 +22,49 @@ import java.util.Comparator;
 public final class FindMeetingQuery {
     public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
         long duration = request.getDuration();
-        Collection<String> meetingAttendees = request.getAttendees();
-        Collection<String> optionalAttendees = request.getOptionalAttendees();
+        Collection<String> mandatoryAttendees = request.getAttendees();
+        Collection<String> allAttendees = new ArrayList<String>();
+        allAttendees.addAll(mandatoryAttendees);
+        allAttendees.addAll(request.getOptionalAttendees());
 
         Comparator<Event> EVENT_BY_START 
             = (a,b) -> Integer.compare(a.getWhen().start(), b.getWhen().start());
-        Collections.sort(new ArrayList(events), EVENT_BY_START);
+        ArrayList<Event> eventsList = new ArrayList(events);
+        Collections.sort(eventsList, EVENT_BY_START);
 
-        ArrayList<TimeRange> meetingTimes = new ArrayList<>();
+        ArrayList<TimeRange> mandatoryTimes = new ArrayList<>();
         ArrayList<TimeRange> optionalTimes = new ArrayList<>();
-        int curStart = 0;
-        for (Event e: events) {
-            if (curStart >= 1440 || e.getWhen().start() >= 1440) {
+        int mandatoryStart = 0;
+        int optionalStart = 0;
+        for (Event e: eventsList) {
+            if (mandatoryStart >= 1440 || e.getWhen().start() >= 1440) {
                 break;
             }
-            if (!Collections.disjoint(meetingAttendees, e.getAttendees())) {
+            if (!Collections.disjoint(allAttendees, e.getAttendees())) {
                 int curEnd = e.getWhen().start();
-                TimeRange t = TimeRange.fromStartEnd(curStart, curEnd, false);
-                if (curEnd - curStart >= duration) {
-                    if (Collections.disjoint(optionalAttendees, e.getAttendees())) {
-                        optionalTimes.add(t);
-                    }
-                    meetingTimes.add(t);
+                if (curEnd - optionalStart >= duration) {
+                    TimeRange optionalSlot = TimeRange.fromStartEnd(optionalStart, curEnd, false);
+                    optionalTimes.add(optionalSlot);
                 }
-                curStart = Math.max(curStart, e.getWhen().end());
+                optionalStart = Math.max(optionalStart, e.getWhen().end());
+                if (!Collections.disjoint(mandatoryAttendees, e.getAttendees())) {
+                    if (curEnd - mandatoryStart >= duration) {
+                        TimeRange mandatorySlot = TimeRange.fromStartEnd(mandatoryStart, curEnd, false);
+                        mandatoryTimes.add(mandatorySlot);
+                    }
+                    mandatoryStart = Math.max(mandatoryStart, e.getWhen().end());
+                }
             }
         }
-        if (1440 - curStart >= duration) {
-            optionalTimes.add(TimeRange.fromStartEnd(curStart, 1440, false));
-            meetingTimes.add(TimeRange.fromStartEnd(curStart, 1440, false));
+        if (1440 - mandatoryStart >= duration) {
+            mandatoryTimes.add(TimeRange.fromStartEnd(mandatoryStart, 1440, false));
+            if (1440 - optionalStart >= duration) {
+                optionalTimes.add(TimeRange.fromStartEnd(optionalStart, 1440, false));
+            }
         }
-        return optionalTimes.size() > 0 ? optionalTimes : meetingTimes;
+        if (optionalTimes.size() == 0 && mandatoryAttendees.size() == 0) {
+            return new ArrayList<TimeRange>();
+        }
+        return optionalTimes.size() > 0 ? optionalTimes : mandatoryTimes;
     }
 }
