@@ -70,4 +70,15 @@ public class Comment {
         c.setImageSrc((String) entity.getProperty("imageSrc"));
         return c;
     }
+    /*
+     * Gets a the parameter's value from the request or a default value if the request 
+     * does not contain the parameter.
+     */
+    private static String getParamOrDefault(HttpServletRequest request, String paramName, String revert) {
+        final String paramValue = request.getParameter(paramName);
+        if (paramValue == null) {
+            return revert;
+        }
+        return paramValue;
+    }
 }
