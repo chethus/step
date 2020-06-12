@@ -27,12 +27,12 @@ let htmlImage;
 let htmlCaption;
 let imageInd;
 
-//Must wait until window loads so that html elements exist
+// Must wait until window loads so that html elements exist.
 window.onload = function setUpImage() {
     htmlImage = document.getElementById("gallery");
     htmlCaption = document.getElementById("caption");
     imageInd = galleryImages.length - 1;
-    //Next image will be the image at index 0
+    // Next image will be the image at index 0.
     nextImage();
 }
 
@@ -48,7 +48,7 @@ function nextImage() {
 }
 
 function prevImage() {
-    //Moving two images back and one forward gets the previous image
+    // Moving two images back and one forward gets the previous image.
     imageInd -= 2;
     if (imageInd < 0) {
         imageInd += galleryImages.length;
@@ -56,14 +56,14 @@ function prevImage() {
     nextImage();
 }
 
-//Shuffles an array, used for image gallery
+// Shuffles an array, used for image gallery.
 function shuffle(arr) {
-    //Number of unshuffled images at the front of the array
+    // Number of unshuffled images at the front of the array.
     let lenLeft = arr.length;
     for (let i = lenLeft; i >= 0; i --) {
-        //Picks a random unshuffled element
+        // Picks a random unshuffled element.
         const ind = Math.floor(Math.random() * lenLeft);
-        //Moves element to back of the array
+        // Moves element to back of the array.
         const ele = arr.splice(ind, 1)[0];
         arr.push(ele);
         lenLeft --;
