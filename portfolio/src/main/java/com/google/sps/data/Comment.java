@@ -56,14 +56,8 @@ public class Comment {
      */
     public static Comment makeComment(HttpServletRequest request) {
         Comment c = new Comment();
-        c.setAuthor(request.getParameter("author"));
-        if (c.getAuthor() == null || c.getAuthor().length() == 0) {
-            c.setAuthor("Anonymous");
-        }
-        c.setText(request.getParameter("text"));
-        if (c.getText() == null) {
-            c.setText("");
-        }
+        c.setAuthor(getParamOrDefault(request, "author", "Anonymous"));
+        c.setText(getParamOrDefault(request, "text", ""));
         return c;
     }
 
@@ -75,5 +69,16 @@ public class Comment {
         c.setAuthor((String) entity.getProperty("author"));
         c.setText((String) entity.getProperty("text"));
         return c;
+    }
+    /*
+     * Gets a the parameter's value from the request or a default value if the request 
+     * does not contain the parameter.
+     */
+    private static String getParamOrDefault(HttpServletRequest request, String paramName, String revert) {
+        final String paramValue = request.getParameter(paramName);
+        if (paramValue == null) {
+            return revert;
+        }
+        return paramValue;
     }
 }
