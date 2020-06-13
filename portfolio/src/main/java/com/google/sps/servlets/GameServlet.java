@@ -129,20 +129,20 @@ public class GameServlet extends HttpServlet {
         switch (type) {
 
             case 0:
-                a = (int) (Math.random() * 1000);
-                b = (int) (Math.random() * 1000);
+                a = (int) (Math.random() * 999 + 1);
+                b = (int) (Math.random() * 999 + 1);
                 question = a + " + " + b;
                 ans.put(startTime, a + b);
                 break;
             case 1:
-                a = (int) (Math.random() * 1000);
-                b = (int) (Math.random() * 1000);
+                a = (int) (Math.random() * 999 + 1);
+                b = (int) (Math.random() * 999 + 1);
                 question = a + " - " + b;
                 ans.put(startTime, a - b);
                 break;
             default:
-                a = (int) (Math.random() * 100);
-                b = (int) (Math.random() * 100);
+                a = (int) (Math.random() * 99 + 1);
+                b = (int) (Math.random() * 99 + 1);
                 question = a + " * " + b;
                 ans.put(startTime, a * b);
                 break;
