@@ -16,7 +16,7 @@
         <li><a href="math.html">Math&nbsp;Game</a></li>
     </ul>
     <h1>About Me</h1>
-    <div class="flex-container">
+    <div class="flex-center">
         <img id="me_switzerland" src="images/me_switzerland.jpg" alt="Me in Switzerland"/>
         <p class="container-text">
           Hi! My name is Chet and I'm a rising sophmore at UC Berkeley. 
@@ -40,19 +40,24 @@
         <ul id="comment-container"></ul>
     </div>
     <h1>Leave A Comment</h1>
-    <div class="center">
+    <!-- Form for submitting comments via POST request -->
+    <div id="comment-form">
         <form action="/data" method="POST">
-            <label for="author">Author</label><br>
+            <label for="author">Author&nbsp;</label>
             <input type="text" id="author" name="author"><br>
-            <label for="subject">Subject</label><br>
-            <input type="text" id="subject" name="subject"><br>
-            <label for="text">Text</label><br>
+            <label for="id">Comment ID&nbsp;</label>
+            <input type="text" id="id" name="id"><br>
+            <label for="text">Text&nbsp;</label>
             <input type="text" id="text" name="text"><br>
-            <input class="submit" type="submit" value="Submit">
+            <div class="center">
+                <input id="comment-submit" class="button" type="submit" value="Submit">
+            </div>
         </form>
     </div>
     <h1>Comments</h1>
-    <div class="flex-container">
+    <!-- Comment display options -->
+    <div class="flex-center">
+        <button onclick=deleteAll()>Delete All</button>
         <button onclick=loadComments()>Refresh </button>
         <select id="select-max" name="max">
             <option value="5">5</option>
@@ -61,7 +66,8 @@
             <option value="100">100</option>
         </select>
     </div>
-    <div id="comment-container" class="center">
+    <!-- Container to udpate with comments using JS -->
+    <div class="ul" id="comment-container">
     </div>
   </body>
 </html>

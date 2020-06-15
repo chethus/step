@@ -21,17 +21,31 @@ async function loadComments() {
 $(document).ready(loadComments);
 
 /**
+ * Delete all comments and update the page.
+ */
+async function deleteAll() {
+
+    // Send a request to DeleteServlet and reload comments.
+    const request = new Request('/delete-data', {method: 'POST'});
+    await fetch(request);
+    await loadComments();
+}
+
+
+/**
  * Create a list entry with the given text.
  */
 function createComment(comment) {
     
     // Set up div for a comment.
-    const commentDiv = document.createElement("div");
+    const commentDiv = document.createElement("li");
+    commentDiv.setAttribute("class", "comment");
     commentDiv.innerHTML = "";
 
-    // Add paragraphs for author, subject, and comment text.
-    commentDiv.appendChild(createP("Author: " + comment.author));
-    commentDiv.appendChild(createP("Subject: " + comment.subject));
+    // Add paragraphs for author and comment text.
+    const author = createP(comment.author);
+    author.setAttribute("class", "name");
+    commentDiv.appendChild(author);
     commentDiv.appendChild(createP(comment.text));
 
     return commentDiv;
