@@ -3,6 +3,10 @@ package com.google.sps.data;
 import javax.servlet.http.HttpServletRequest;
 import com.google.appengine.api.datastore.Entity;
 
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
+
 /**
  * A class for storing a Comment.
  */
@@ -11,6 +15,7 @@ public class Comment {
     private String text;
     private long timestamp;
     private String imageSrc;
+    private float happyScore;
 
     /**
      * No argument constructor.
@@ -24,6 +29,7 @@ public class Comment {
         this.nickname = nickname;
         this.text = text;
         this.imageSrc = imageSrc;
+        getSentiment();
     }
 
 
@@ -68,6 +74,7 @@ public class Comment {
         c.setNickname((String) entity.getProperty("nickname"));
         c.setText((String) entity.getProperty("text"));
         c.setImageSrc((String) entity.getProperty("imageSrc"));
+        
         return c;
     }
     /*
@@ -80,5 +87,15 @@ public class Comment {
             return revert;
         }
         return paramValue;
+    }
+
+    private static float getSentimentScore(String message) {
+        Document doc =
+            Document.newBuilder().setContent(message).setType(Document.Type.PLAIN_TEXT).build();
+        LanguageServiceClient languageService = LanguageServiceClient.create();
+        Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
+        float score = sentiment.getScore();
+        languageService.close();
+        return score;
     }
 }
