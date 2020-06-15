@@ -174,3 +174,8 @@ button, select {
 .name {
     color: dodgerblue;
 }
+
+#page {
+    font-size: min(4.5vh, 6vw);
+    max-width: min(9vh, 12vw);
+}
