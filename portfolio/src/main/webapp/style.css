@@ -142,7 +142,7 @@ button, select {
     display: none;
 }
 
-#comment-form {
+#form-container, #delete-container {
     align-items: left;
     max-width: 25vw;
     margin: auto;

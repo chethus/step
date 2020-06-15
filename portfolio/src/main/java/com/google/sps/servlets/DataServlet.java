@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -45,12 +46,13 @@ public class DataServlet extends HttpServlet {
         Entity commentEntity = new Entity("comment");
         commentEntity.setProperty("timestamp", c.getTimestamp());
         commentEntity.setProperty("author", c.getAuthor());
-        commentEntity.setProperty("id", c.getId());
         commentEntity.setProperty("text", c.getText());
         datastore.put(commentEntity);
 
-        // Reload the page.
-        response.sendRedirect("/index.html");
+        // Return the comment ID.
+        Gson gson = new Gson();
+        response.setContentType("text/plain");
+        response.getWriter().println(commentEntity.getKey().getId());
     }
 
     @Override

@@ -8,7 +8,6 @@ import com.google.appengine.api.datastore.Entity;
  */
 public class Comment {
     private String author;
-    private String id;
     private String text;
     private long timestamp;
 
@@ -20,10 +19,9 @@ public class Comment {
         this.timestamp = System.currentTimeMillis();
     }
 
-    public Comment(String author, String id, String text) {
+    public Comment(String author, String text) {
         this();
         this.author = author;
-        this.id = id;
         this.text = text;
     }
 
@@ -44,14 +42,6 @@ public class Comment {
         this.author = author;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getText() {
         return text;
     }
@@ -67,7 +57,6 @@ public class Comment {
     public static Comment makeComment(HttpServletRequest request) {
         Comment c = new Comment();
         c.setAuthor(getParamOrDefault(request, "author", "Anonymous"));
-        c.setId(getParamOrDefault(request, "id", System.currentTimeMillis() + ""));
         c.setText(getParamOrDefault(request, "text", ""));
         return c;
     }
@@ -78,7 +67,6 @@ public class Comment {
     public static Comment makeComment(Entity entity) {
         Comment c = new Comment();
         c.setAuthor((String) entity.getProperty("author"));
-        c.setId((String) entity.getProperty("id"));
         c.setText((String) entity.getProperty("text"));
         return c;
     }
