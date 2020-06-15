@@ -1,23 +1,49 @@
 /**
- * Fetches a comment from the server and adds it to the DOM.
+ * Fetches comments from the server and adds them to the DOM.
  */
-let commentText;
-$(document).ready(async function getData() {
-    const commentJSON = await fetch('/data');
-    const comment = await commentJSON.json();
-    //Add each element of comment to the container list
-    const $list = document.getElementById("comment-container")
-    $list.innerHTML = '';
-    comment.forEach(text => {$list.appendChild(createLi(text))});
-});
+async function loadComments() {
+
+    // Get comment limit from form.
+    const selectMax = document.getElementById("select-max");
+    const maxComments = selectMax.options[selectMax.selectedIndex].value;
+  
+    // Request JSON based on user comment limit.
+    const commentsJSON = await fetch("/data?max=" + maxComments);
+    // Convert JSON to object.
+    const comments = await commentsJSON.json();
+
+    // Add all comments to comment container.
+    const container = document.getElementById("comment-container");
+    container.innerHTML = "";
+    comments.forEach(comment => container.innerHTML += createComment(comment).outerHTML);
+}
+
+$(document).ready(loadComments);
 
 /**
- * Creates a list entry with the given text.
+ * Create a list entry with the given text.
  */
-function createLi(text) {
-    const entry = document.createElement("li");
-    entry.textContent = text;
-    return entry;
+function createComment(comment) {
+    
+    // Set up div for a comment.
+    const commentDiv = document.createElement("div");
+    commentDiv.innerHTML = "";
+
+    // Add paragraphs for author, subject, and comment text.
+    commentDiv.appendChild(createP("Author: " + comment.author));
+    commentDiv.appendChild(createP("Subject: " + comment.subject));
+    commentDiv.appendChild(createP(comment.text));
+
+    return commentDiv;
+}
+
+/**
+ * Create a paragraph with the given text.
+ */
+function createP(text) {
+    const p = document.createElement("p");
+    p.textContent = text;
+    return p;
 }
 
 /**

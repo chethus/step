@@ -39,5 +39,29 @@
         <div id="fact-container">&nbsp;</div>
         <ul id="comment-container"></ul>
     </div>
+    <h1>Leave A Comment</h1>
+    <div class="center">
+        <form action="/data" method="POST">
+            <label for="author">Author</label><br>
+            <input type="text" id="author" name="author"><br>
+            <label for="subject">Subject</label><br>
+            <input type="text" id="subject" name="subject"><br>
+            <label for="text">Text</label><br>
+            <input type="text" id="text" name="text"><br>
+            <input class="submit" type="submit" value="Submit">
+        </form>
+    </div>
+    <h1>Comments</h1>
+    <div class="flex-container">
+        <button onclick=loadComments()>Refresh </button>
+        <select id="select-max" name="max">
+            <option value="5">5</option>
+            <option value="20" selected>20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+    <div id="comment-container" class="center">
+    </div>
   </body>
 </html>
