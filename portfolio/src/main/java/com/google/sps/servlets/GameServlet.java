@@ -49,14 +49,12 @@ public class GameServlet extends HttpServlet {
 
             // Error if the game is over or if the start time is in the future (modulo some error).
             // Prevents hacking via extending game duration.
-            long time = System.currentTimeMillis();
-            if (time - startTime > 60500 || time - startTime < -50) {
+            if (isStartTimeIllegal(startTime)) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
 
             try {
-
                 // Update the users score (they are identified by their game start time).
                 int userAns = Integer.parseInt(userAnsStr);
                 int correct = 0;
@@ -89,7 +87,9 @@ public class GameServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        
+        // Required to fix an obscure font config bug.
+        // See https://stackoverflow.com/questions/45100138/how-to-configure-google-appengine-to-work-with-vector-graphic.
         String fontConfig = System.getProperty("java.home")
             + File.separator + "lib"
             + File.separator + "fontconfig.Prodimage.properties";
@@ -99,15 +99,14 @@ public class GameServlet extends HttpServlet {
 
         // Require start time so we know what client we are sending the question to.
         String startTimeStr = request.getParameter("start");
-        if (startTimeStr == null ) {
+        if (startTimeStr == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         // Check if the start time is invalid.
         long startTime = Long.parseLong(startTimeStr);
-        long time = System.currentTimeMillis();
-        if (time - startTime > 60500 || time - startTime < -50) {
+        if (isStartTimeIllegal(startTime)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -168,5 +167,10 @@ public class GameServlet extends HttpServlet {
         ImageIO.write(bufferedImage, "png", out);
         byte[] bytes = out.toByteArray();
         return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    private boolean isStartTimeIllegal(long startTime) {
+        long time = System.currentTimeMillis();
+        return time - startTime > 60500 || time - startTime < -50;
     }
 }

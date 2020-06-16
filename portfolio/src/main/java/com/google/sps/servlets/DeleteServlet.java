@@ -32,11 +32,11 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/delete")
 public class DeleteServlet extends HttpServlet {
+    
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         // If we are deleting a specific comment.
         if (request.getParameter("id") != null) {
             

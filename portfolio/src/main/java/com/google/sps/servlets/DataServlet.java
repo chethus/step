@@ -34,11 +34,11 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+    
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
         // Create Comment from request.
         Comment c = Comment.makeComment(request);
 
@@ -57,7 +57,6 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
         // Get comment limit parameter.
         int max = Integer.parseInt(request.getParameter("max"));
 
@@ -76,8 +75,10 @@ public class DataServlet extends HttpServlet {
         Query query = new Query("comment").addSort("timestamp", SortDirection.DESCENDING);
         PreparedQuery results = datastore.prepare(query);
 
-        // Skip earlier pages and enforce Comment limit.
+        // Set the max # of comments fetched by the query to limit comments on page.
         FetchOptions options = FetchOptions.Builder.withLimit(max);
+        
+        // To get the correct comments, offset by (# previous pages) * (#comments/page).
         options.offset((page - 1) * max);
 
         for (Entity entity : results.asIterable(options)) {
