@@ -6,6 +6,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
+import java.io.IOException;
 
 /**
  * A class for storing a Comment.
@@ -17,19 +18,13 @@ public class Comment {
     private String imageSrc;
     private float happyScore;
 
-    /**
-     * No argument constructor.
-     * Set fields with setter methods.
-     */
-    public Comment() {
-    }
-
-    public Comment(String nickname, String text, String imageSrc) {
-        this.timestamp = System.currentTimeMillis();
+    public Comment(long timestamp, String nickname, String text, String imageSrc) throws IOException{
+        this.timestamp = timestamp;
         this.nickname = nickname;
         this.text = text;
         this.imageSrc = imageSrc;
-        getSentiment();
+        // Calculate sentiment score of text.
+        this.happyScore = getSentimentScore(text);
     }
 
 
@@ -68,15 +63,15 @@ public class Comment {
     /**
      * Creates a Comment from a Datastore entity.
     */
-    public static Comment makeComment(Entity entity) {
-        Comment c = new Comment();
-        c.setTimestamp((long) entity.getProperty("timestamp"));
-        c.setNickname((String) entity.getProperty("nickname"));
-        c.setText((String) entity.getProperty("text"));
-        c.setImageSrc((String) entity.getProperty("imageSrc"));
-        
+    public static Comment makeComment(Entity entity) throws IOException{
+        long timestamp = (long) entity.getProperty("timestamp");
+        String nickname = (String) entity.getProperty("nickname");
+        String text = (String) entity.getProperty("text");
+        String imageSrc = (String) entity.getProperty("imageSrc");
+        Comment c = new Comment(timestamp, nickname, text, imageSrc);
         return c;
     }
+
     /*
      * Gets a the parameter's value from the request or a default value if the request 
      * does not contain the parameter.
@@ -89,12 +84,22 @@ public class Comment {
         return paramValue;
     }
 
-    private static float getSentimentScore(String message) {
+    /**
+     * Calculate the sentiment score for a Comment.
+     */
+    private static float getSentimentScore(String message) throws IOException{
+        float score = 0;
+
+        // Set up sentiment services.
         Document doc =
             Document.newBuilder().setContent(message).setType(Document.Type.PLAIN_TEXT).build();
         LanguageServiceClient languageService = LanguageServiceClient.create();
+
+        // Create sentiment object.
         Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
-        float score = sentiment.getScore();
+        
+        // Get and return sentiment score.
+        score = sentiment.getScore();
         languageService.close();
         return score;
     }
