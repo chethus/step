@@ -9,8 +9,8 @@ public class OwnComment extends Comment {
     private long commentId;
 
     
-    public OwnComment(long timestamp, String nickname, String text, String imageSrc, long commentId) throws IOException{
-        super(timestamp, nickname, text, imageSrc);
+    public OwnComment(long timestamp, String nickname, String text, String imageSrc, float happyScore, long commentId) {
+        super(timestamp, nickname, text, imageSrc, happyScore);
         this.commentId = commentId;
     }
 
@@ -18,7 +18,7 @@ public class OwnComment extends Comment {
      * Create OwnComment with comment ID given a comment.
      */
     public OwnComment(Comment c, long commentId) throws IOException{
-        super(c.getTimestamp(), c.getNickname(), c.getText(), c.getImageSrc());
+        super(c.getTimestamp(), c.getNickname(), c.getText(), c.getImageSrc(), c.getHappyScore());
         setCommentId(commentId);
     }
 

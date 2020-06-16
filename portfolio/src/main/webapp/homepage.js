@@ -38,15 +38,12 @@ async function loadComments() {
     const selectMax = document.getElementById("comment-max");
     const maxComments = selectMax.options[selectMax.selectedIndex].value;
 
-    let queryString = "max=" + maxComments;
-    queryString += "&page=" + page;
+    let queryString = "max=" + maxComments + "&page=" + page;
   
     // Request JSON based on user comment limit.
     const commentsJSON = await fetch("/comments?" + queryString);
     // Convert JSON to object.
     const comments = await commentsJSON.json();
-
-    console.log(comments);
 
     // Add all comments to comment container.
     const container = document.getElementById("comment-container");
@@ -89,6 +86,17 @@ function createComment(comment) {
     return commentDiv;
 }
 
+let blobstoreUrl = null;
+
+// Set request URL for images from blobstore.
+async function getBlobstoreUrl() {
+
+    const blobstoreResponse = await fetch("/blobstore-upload-url");
+    blobstoreUrl = await blobstoreResponse.text();
+}
+
+$(document).ready(getBlobstoreUrl);
+
 /**
  * Sends a comment using a POST request and receives the comment ID.
  */
@@ -98,11 +106,7 @@ async function submitComment() {
     const commentForm = document.getElementById("comment-form");
     const formData = new FormData(commentForm);
 
-    // Get request URL for the image from blobstore.
-    const responseUrl = await fetch("/blobstore-upload-url");
-    const urlText = await responseUrl.text();
-
-    const request = new Request(urlText, {method: "POST", body: formData});
+    const request = new Request(blobstoreUrl, {method: "POST", body: formData});
 
     // Reset comment form and get response from request.
     commentForm.reset();
@@ -110,6 +114,9 @@ async function submitComment() {
 
     // Update comments with new comment.
     loadComments();
+
+    // Get new blobstore upload url.
+    getBlobstoreUrl();
 }
 
 /**

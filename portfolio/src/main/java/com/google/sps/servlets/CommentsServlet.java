@@ -45,6 +45,10 @@ import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
 
+import com.google.cloud.language.v1.Document;
+import com.google.cloud.language.v1.LanguageServiceClient;
+import com.google.cloud.language.v1.Sentiment;
+
 import com.google.gson.Gson;
 import java.net.URL;
 import java.util.Map;
@@ -98,6 +102,7 @@ public class CommentsServlet extends HttpServlet {
             commentEntity.setProperty("timestamp", System.currentTimeMillis());
             commentEntity.setProperty("text", text);
             commentEntity.setProperty("imageSrc", getFileUrl(request, "image"));
+            commentEntity.setProperty("happyScore", getSentimentScore(text));
             datastore.put(commentEntity);
         }
     }
@@ -177,5 +182,25 @@ public class CommentsServlet extends HttpServlet {
         } catch (MalformedURLException e) {
             return imagesService.getServingUrl(options);
         }
+    }
+
+    /**
+     * Calculate the sentiment score for a Comment.
+     */
+    private static float getSentimentScore(String message) throws IOException{
+        float score = 0;
+
+        // Set up sentiment services.
+        Document doc =
+            Document.newBuilder().setContent(message).setType(Document.Type.PLAIN_TEXT).build();
+        LanguageServiceClient languageService = LanguageServiceClient.create();
+
+        // Create sentiment object.
+        Sentiment sentiment = languageService.analyzeSentiment(doc).getDocumentSentiment();
+        
+        // Get and return sentiment score.
+        score = sentiment.getScore();
+        languageService.close();
+        return score;
     }
 }
