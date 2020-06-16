@@ -70,6 +70,9 @@ async function gameOver() {
     }
 }
 
+google.charts.load('current', {'packages':['corechart', 'table']});
+google.charts.setOnLoadCallback(loadScores);
+
 /**
  * Fetches scores from the server and adds them to the DOM.
  */
@@ -95,29 +98,21 @@ async function loadScores() {
     // Convert JSON to object.
     const scores = await scoresJSON.json();
 
-    // Add all scores to score container.
-    const container = document.getElementById("score-container");
-    container.innerHTML = "";
-    scores.forEach(score => container.innerHTML += createScore(score).outerHTML);
-}
+    // Add all scores to score table.
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'Name');
+    data.addColumn('number', 'Score');
+    scores.forEach(score => data.addRow([score.nickname, score.score]));
 
-$(document).ready(loadScores);
+    const options = {
+        showRowNumber: true,
+        width: '100%',
+        height: '100%'
+    };
 
-function createScore(entry) {
-       
-    // Set up div for a score.
-    const scoreDiv = document.createElement("li");
-    scoreDiv.setAttribute("class", "score-entry");
-    scoreDiv.innerHTML = "";
-
-    // Add fields.
-    scoreDiv.appendChild(createSpan(entry.rank + ". " + entry.nickname));
-
-    const score = createSpan(entry.score);
-    score.setAttribute("class", "score");
-    scoreDiv.appendChild(score);
-
-    return scoreDiv;
+    const chart = new google.visualization.Table(
+        document.getElementById('score-container'));
+    chart.draw(data, options);
 }
 
 /**
