@@ -33,7 +33,6 @@ public class GameServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         // Load request params into strings.
         String startTimeStr = request.getParameter("start");
         String userAnsStr = request.getParameter("ans");
