@@ -68,9 +68,9 @@
     <div class="flex-center">
         <button onclick=deleteAll()>Delete All</button>
         <button onclick="prevPage()">&lt;</button>
-        <input id="page" onchange="loadComments()" type="text" value="1">
+        <input id="comment-page" class="page" onchange="loadComments()" type="text" value="1">
         <button onclick="nextPage()">&gt;</button>
-        <select id="select-max" onchange="loadComments()" name="max">
+        <select id="comment-max" class="select-max" onchange="loadComments()" name="max">
             <option value="5">5</option>
             <option value="20" selected>20</option>
             <option value="50">50</option>
