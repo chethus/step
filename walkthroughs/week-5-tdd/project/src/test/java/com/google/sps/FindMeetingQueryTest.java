@@ -277,7 +277,6 @@ public final class FindMeetingQueryTest {
   @Test
   public void optionalAllDay() {
     // Ignore an optional attendee with an all-day event.
-
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartDuration(TIME_0800AM, DURATION_30_MINUTES),
             Arrays.asList(PERSON_A)),
@@ -302,7 +301,6 @@ public final class FindMeetingQueryTest {
   @Test
   public void optionalAttendeeConsidered() {
     // Consider an optional attendee with a conflict during one of the windows.
-
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartDuration(TIME_0800AM, DURATION_30_MINUTES),
             Arrays.asList(PERSON_A)),
@@ -326,7 +324,6 @@ public final class FindMeetingQueryTest {
   @Test
   public void optionalAttendeeIgnored() {
     // Ignore an optional attendee who cannot make the mandatory time window.
-
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, false),
             Arrays.asList(PERSON_A)),
@@ -353,6 +350,7 @@ public final class FindMeetingQueryTest {
             Arrays.asList(PERSON_A)),
         new Event("Event 2", TimeRange.fromStartDuration(TIME_1100AM, DURATION_60_MINUTES),
             Arrays.asList(PERSON_B)));
+
     MeetingRequest request = new MeetingRequest(new ArrayList<String>(), DURATION_90_MINUTES);
     request.addOptionalAttendee(PERSON_A);
     request.addOptionalAttendee(PERSON_B);
@@ -373,6 +371,7 @@ public final class FindMeetingQueryTest {
             Arrays.asList(PERSON_A)),
         new Event("Event 2", TimeRange.fromStartEnd(TIME_1200PM, TimeRange.END_OF_DAY, true),
             Arrays.asList(PERSON_B)));
+            
     MeetingRequest request = new MeetingRequest(new ArrayList<String>(), DURATION_15_MINUTES);
     request.addOptionalAttendee(PERSON_A);
     request.addOptionalAttendee(PERSON_B);

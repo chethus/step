@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public final class FindMeetingQuery {
-    public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
 
+    public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
         // Get request duration, mandatory attendees, and optional attendees.
         long duration = request.getDuration();
         Collection<String> mandatoryAttendees = request.getAttendees();
@@ -44,7 +44,6 @@ public final class FindMeetingQuery {
         int optionalStart = 0;
 
         for (Event e: eventsList) {
-
             // If the day is over or the next open window begins the next day, break.
             // Mandatory start will always be less than optional start since it is more restricted.
             if (mandatoryStart >= 1440 || e.getWhen().start() >= 1440) {
@@ -53,7 +52,6 @@ public final class FindMeetingQuery {
 
             // If some attendees (including optional) have this event.
             if (!Collections.disjoint(allAttendees, e.getAttendees())) {
-
                 // End the current optional window and save it if it's long enough.
                 int curEnd = e.getWhen().start();
                 if (curEnd - optionalStart >= duration) {
