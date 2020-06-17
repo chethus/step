@@ -25,7 +25,6 @@ function randomFact() {
  * Fetches comments from the server and adds them to the DOM.
  */
 async function loadComments() {
-
     // Check if page field is valid.
     let page = $("#comment-page").val();
     if (parseInt(page) != page || parseInt(page) <= 0) {
@@ -66,7 +65,6 @@ $(document).ready(loadComments);
  * Load comment form based on login status.
  */
 async function loadCommentForm() {
-
     // Request user information from server.
     const responseJSON = await fetch("/user");
     const response = await responseJSON.json();
@@ -91,7 +89,6 @@ $(document).ready(loadCommentForm);
  * Create a list entry with the given text.
  */
 function createComment(comment) {
-    
     // Set up div for a comment.
     const commentDiv = document.createElement("li");
     commentDiv.setAttribute("class", "comment");
@@ -110,7 +107,6 @@ function createComment(comment) {
  * Sends a Comment using a POST request and receives the Comment ID.
  */
 async function submitComment() {
-
     // Make request from data in Comment form.
     const commentForm = document.getElementById("comment-form");
     const formData = (new URLSearchParams(new FormData(commentForm))).toString();
@@ -140,7 +136,6 @@ async function submitComment() {
  * Delete all comments and update the page.
  */
 async function deleteAll() {
-
     // Send a request to DeleteServlet and reload comments.
     const request = new Request("/delete", {method: "POST"});
     const response = await fetch(request);
@@ -159,7 +154,6 @@ async function deleteAll() {
  * Deletes a Comment using the Comment ID in the delete form.
  */
 async function deleteComment() {
-
     // Extract delete form data into request.
     const deleteForm = document.getElementById("delete-form");
     const formData = (new URLSearchParams(new FormData(deleteForm))).toString();

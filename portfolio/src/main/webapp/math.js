@@ -100,7 +100,6 @@ async function gameOver() {
  * Fetches scores from the server and adds them to the DOM.
  */
 async function loadScores() {
-
     // Check if page field is valid.
     let page = $("#score-page").val();
     if (parseInt(page) != page || parseInt(page) <= 0) {
@@ -138,7 +137,6 @@ async function loadScores() {
 $(document).ready(loadScores);
 
 function createScore(entry) {
-       
     // Set up div for a score.
     const scoreDiv = document.createElement("li");
     scoreDiv.setAttribute("class", "score-entry");
