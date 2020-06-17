@@ -53,6 +53,8 @@ public class CommentServlet extends HttpServlet {
             // Find userId and user nickname.
             String userId = userService.getCurrentUser().getUserId();
             String nickname = userService.getCurrentUser().getNickname();
+
+            // Query database to see if user has a nickname stored.
             Query query = new Query("user").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
             PreparedQuery results = datastore.prepare(query);
             Entity entity = results.asSingleEntity();

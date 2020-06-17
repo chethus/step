@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.Entity;
  * A class for storing a Comment.
  */
 public class Comment {
+
     private String nickname;
     private String text;
     private long timestamp;
@@ -22,8 +23,8 @@ public class Comment {
         return timestamp;
     }
 
-    public void setTimestamp(long time) {
-        this.timestamp = time;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getNickname() {

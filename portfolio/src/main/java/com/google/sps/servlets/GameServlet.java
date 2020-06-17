@@ -36,7 +36,6 @@ public class GameServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         if (!userService.isUserLoggedIn()) {
             String loginUrl = userService.createLoginURL("/index.html");
             response.sendRedirect(loginUrl);
@@ -90,7 +89,6 @@ public class GameServlet extends HttpServlet {
 
         // Otherwise, this is a request to be added to the highscore list.
         } else {
-
             // Get the user's nickname for the highscore list.
             String userId = userService.getCurrentUser().getUserId();
             String nickname = userService.getCurrentUser().getNickname();

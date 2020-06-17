@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.Entity;
  * A class for storing a Score.
  */
 public class Score {
+    
     private String nickname;
     private int score;
     private int rank;
