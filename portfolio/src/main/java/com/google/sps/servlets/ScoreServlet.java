@@ -26,7 +26,7 @@ public class ScoreServlet extends HttpServlet {
         // Get score limit parameter.
         int max;
         try {
-            Integer.parseInt(request.getParameter("max"));
+            max = Integer.parseInt(request.getParameter("max"));
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setContentType("text/plain");
