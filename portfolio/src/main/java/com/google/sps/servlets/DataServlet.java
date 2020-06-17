@@ -99,14 +99,6 @@ public class DataServlet extends HttpServlet {
             comments.add(Comment.makeComment(entity));
         }
 
-        // If no comments, alert that page is empty.
-        if (comments.size() == 0 && page > 1) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setContentType("text/plain");
-            response.getWriter().println("Page is empty.");
-            return;
-        }
-
         // Send JSON back to site.
         Gson gson = new Gson();
         response.setContentType("application/json");

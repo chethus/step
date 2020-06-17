@@ -46,8 +46,9 @@ async function loadComments() {
 
     // If there is an error, alert with the message.
     if (response.status >= 400) {
+        $("#comment-page").val(1);
+        page = 1;
         alert(await response.text());
-        return;
     }
 
     // Otherwise, convert JSON to object.

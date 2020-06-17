@@ -122,7 +122,8 @@ async function loadScores() {
     // If there was a server error, alert with text and exit.
     if (scoresResponse.status >= 400) {
         alert(await scoresResponse.text());
-        return;
+        $("#score-page").val(1);
+        page = 1;
     }
 
     // Convert JSON to object.

@@ -22,6 +22,7 @@ import java.util.HashMap;
 
 @WebServlet("/game")
 public class GameServlet extends HttpServlet {
+    
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Scores of games currently in progress.
@@ -56,7 +57,6 @@ public class GameServlet extends HttpServlet {
             return;
         }
         if (userAnsStr != null) {
-
             // Error if the game is over or if the start time is in the future (modulo some error).
             // Prevents hacking via extending game duration.
             if (isStartTimeIllegal(startTime)) {
@@ -80,7 +80,6 @@ public class GameServlet extends HttpServlet {
 
         // If name param exists, this is a request to be added to the highscore list.
         } else if (name != null) {
-
             // Create new entity on highscore list.
             Entity scoreEntity = new Entity("score");
             scoreEntity.setProperty("name", name);
@@ -99,7 +98,6 @@ public class GameServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
         // Required to fix an obscure font config bug.
         // See https://stackoverflow.com/questions/45100138/how-to-configure-google-appengine-to-work-with-vector-graphic.
         String fontConfig = System.getProperty("java.home")
@@ -133,8 +131,7 @@ public class GameServlet extends HttpServlet {
     }
 
     // Generate a new question and set the answer instance variable.
-    public String getQuestion(long startTime) {
-        
+    public String getQuestion(long startTime) {  
         // Randomly select image type.
         int type = (int) (Math.random() * 3);
         
@@ -142,7 +139,6 @@ public class GameServlet extends HttpServlet {
         String question = null;
         int a, b;
         switch (type) {
-
             case 0:
                 a = (int) (Math.random() * 999 + 1);
                 b = (int) (Math.random() * 999 + 1);
