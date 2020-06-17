@@ -31,13 +31,10 @@ public class UserServlet extends HttpServlet {
         Gson gson = new Gson();
 
         if (!userService.isUserLoggedIn()) {
-
             // If the user is not logged in, return a login link for a button.
             String loginUrl = userService.createLoginURL("/user");
             out.println(gson.toJson(loginUrl));
-
         } else {
-
             // Otherwise, get user login information.
             String id = userService.getCurrentUser().getUserId();
             String email = userService.getCurrentUser().getEmail();
@@ -59,17 +56,12 @@ public class UserServlet extends HttpServlet {
 
     @Override 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         if (!userService.isUserLoggedIn()) {
-
-            // If the user isn't login, redirect to the login page.
+            // If the user isn't logged in, redirect to the login page.
             String loginUrl = userService.createLoginURL("/user");
             response.sendRedirect(loginUrl);
-
         } else {
-
             // Otherwise, we are changing the nickname.
-
             // Get the user's id and nickname.
             String id = userService.getCurrentUser().getUserId();
             String nickname = request.getParameter("nickname");
