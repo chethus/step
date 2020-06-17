@@ -11,13 +11,6 @@ public class Score {
     private int score;
     private int rank;
 
-    /**
-     * No argument constructor.
-     * Set fields with setter methods.
-     */
-    public Score() {
-    }
-
     public Score(String name, int score, int rank) {
         this.name = name;
         this.score = score;
@@ -48,15 +41,13 @@ public class Score {
         this.rank = rank;
     }
 
-
     /**
      * Creates a Score from a Datastore entity and a given rank.
     */
     public static Score makeScore(Entity entity, int rank) {
-        Score s = new Score();
-        s.setName((String) entity.getProperty("name"));
-        s.setScore(Integer.parseInt(entity.getProperty("score").toString()));
-        s.setRank(rank);
+        String name = (String) entity.getProperty("name");
+        int score = Integer.parseInt(entity.getProperty("score").toString());
+        Score s = new Score(name, score, rank);
         return s;
     }
 }
