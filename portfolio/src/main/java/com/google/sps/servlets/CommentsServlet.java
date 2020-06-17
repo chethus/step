@@ -48,11 +48,13 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.lang.IllegalArgumentException;
 import java.net.MalformedURLException;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** Servlet that handles and returns coments. */
 @WebServlet("/comments")
 public class CommentsServlet extends HttpServlet {
+
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private UserService userService = UserServiceFactory.getUserService();
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -60,25 +62,25 @@ public class CommentsServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
         if (!userService.isUserLoggedIn()) {
             String loginUrl = userService.createLoginURL("/index.html");
             response.sendRedirect(loginUrl);
         } else {
-
             // Get comment text.
             String text = request.getParameter("text");
-
+            
             // Find userId and user nickname.
             String userId = userService.getCurrentUser().getUserId();
             String nickname = userService.getCurrentUser().getNickname();
+
+            // Query database to see if user has a nickname stored.
             Query query = new Query("user").setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, userId));
             PreparedQuery results = datastore.prepare(query);
             Entity entity = results.asSingleEntity();
             if (entity != null) {
                 nickname = (String) entity.getProperty("nickname");
             }
-
+            
             // Set properties in Datastore entity.
             Entity commentEntity = new Entity("comment");
             commentEntity.setProperty("userId", userId);
@@ -97,16 +99,28 @@ public class CommentsServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
         // Get comment limit parameter.
-        int max = Integer.parseInt(request.getParameter("max"));
+        int max;
+        try {
+            max = Integer.parseInt(request.getParameter("max"));
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Invalid comment limit.");
+            return;
+        }
 
         // Get page number.
         int page;
         try {
             page = Integer.parseInt(request.getParameter("page"));
-        } catch (NumberFormatException e) {
+            if (page < 1) {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Invalid page number.");
             return;
         }
         
@@ -116,8 +130,10 @@ public class CommentsServlet extends HttpServlet {
         Query query = new Query("comment").addSort("timestamp", SortDirection.DESCENDING);
         PreparedQuery results = datastore.prepare(query);
 
-        // Skip earlier pages and enforce Comment limit.
+        // Set the max # of comments fetched by the query to limit comments on page.
         FetchOptions options = FetchOptions.Builder.withLimit(max);
+        
+        // To get the correct comments, offset by (# previous pages) * (#comments/page).
         options.offset((page - 1) * max);
 
         for (Entity entity : results.asIterable(options)) {

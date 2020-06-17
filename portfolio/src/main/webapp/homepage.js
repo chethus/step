@@ -25,7 +25,6 @@ function randomFact() {
  * Fetches comments from the server and adds them to the DOM.
  */
 async function loadComments() {
-
     // Check if page field is valid.
     let page = $("#comment-page").val();
     if (parseInt(page) != page || parseInt(page) <= 0) {
@@ -42,9 +41,17 @@ async function loadComments() {
     queryString += "&page=" + page;
   
     // Request JSON based on user comment limit.
-    const commentsJSON = await fetch("/comments?" + queryString);
-    // Convert JSON to object.
-    const comments = await commentsJSON.json();
+    const response = await fetch("/comments?" + queryString);
+
+    // If there is an error, alert with the message.
+    if (response.status >= 400) {
+        $("#comment-page").val(1);
+        page = 1;
+        alert(await response.text());
+    }
+
+    // Otherwise, convert JSON to object.
+    const comments = await response.json();
 
     // Add all comments to comment container.
     const container = document.getElementById("comment-container");
@@ -58,7 +65,6 @@ $(document).ready(loadComments);
  * Create a list entry with the given text.
  */
 function createComment(comment) {
-
     // Set up div for a comment.
     const commentDiv = document.createElement("li");
     commentDiv.setAttribute("class", "comment");
@@ -90,7 +96,6 @@ $(document).ready(loadForm);
  * Sends a Comment using a POST request and receives the Comment ID.
  */
 async function submitComment() {
-
     // Make request from data in Comment form.
     const commentForm = document.getElementById("comment-form");
     const formData = new FormData(commentForm);
@@ -98,11 +103,17 @@ async function submitComment() {
     const urlText = await responseUrl.text();
     const request = new Request(urlText, {method: "POST", body: formData});
 
-    // Reset Comment form and get response from request.
+    // Reset comment form and get response from request.
     commentForm.reset();
     const response = await fetch(request);
 
-    // Update comments with new comment.
+    // If there was an error, alert with response text and exit.
+    if (response.status >= 400) {
+        alert(await response.text());
+        return;
+    }
+
+    // Otherwise, update comments with new comment.
     loadComments();
 
     // Provide user with their comment ID.
@@ -116,10 +127,17 @@ async function submitComment() {
  * Delete all comments and update the page.
  */
 async function deleteAll() {
-
     // Send a request to DeleteServlet and reload comments.
     const request = new Request("/delete", {method: "POST"});
     const response = await fetch(request);
+
+    // If there was an error, alert and exit.
+    if (response.status >= 400) {
+        alert(await response.text());
+        return;
+    }
+
+    // Otherwise, reload the comments.
     loadComments();
 }
 
@@ -127,7 +145,6 @@ async function deleteAll() {
  * Deletes a Comment using the Comment ID in the delete form.
  */
 async function deleteComment() {
-
     // Extract delete form data into request.
     const deleteForm = document.getElementById("delete-form");
     const formData = (new URLSearchParams(new FormData(deleteForm))).toString();
@@ -137,8 +154,9 @@ async function deleteComment() {
 
     // Check response status and update comments.
     const response = await fetch(request);
-    if (response.status === 500) {
-        alert("Comment ID not found");
+    if (response.status >= 400) {
+        alert(await response.text());
+        return;
     }
     loadComments();
 }

@@ -32,28 +32,37 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/delete")
 public class DeleteServlet extends HttpServlet {
+    
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         // If we are deleting a specific comment.
         if (request.getParameter("id") != null) {
             
             // Get the ID and create its key.
-            long id = Long.parseLong(request.getParameter("id"));
+            long id;
+            try {
+                id = Long.parseLong(request.getParameter("id"));
+            } catch (NumberFormatException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("text/plain");
+                response.getWriter().println("Invalid comment ID.");
+                return;
+            }
             Key k = KeyFactory.createKey("comment", id);
 
             try {
                 // Test if the comment exists.
                 datastore.get(k);
-
                 datastore.delete(k);
             } catch (EntityNotFoundException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/plain");
+                response.getWriter().println("No comment found with the specified ID.");
+                return;
             }
         } else {
-
             // Query for and delete all comments.
             Query query = new Query("comment");
             PreparedQuery results = datastore.prepare(query);

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/blobstore-upload-url")
 public class BlobstoreUrlServlet extends HttpServlet {
+    
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     @Override
