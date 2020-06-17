@@ -11,15 +11,8 @@ public class Comment {
     private String text;
     private long timestamp;
 
-    /**
-     * No argument constructor.
-     * Set fields with setter methods.
-     */
-    public Comment() {
-    }
-
-    public Comment(String nickname, String text) {
-        this.timestamp = System.currentTimeMillis();
+    public Comment(long timestamp, String nickname, String text) {
+        this.timestamp = timestamp;
         this.nickname = nickname;
         this.text = text;
     }
@@ -53,21 +46,9 @@ public class Comment {
      * Creates a Comment from a Datastore entity.
     */
     public static Comment makeComment(Entity entity) {
-        Comment c = new Comment();
-        c.setTimestamp((long) entity.getProperty("timestamp"));
-        c.setNickname((String) entity.getProperty("nickname"));
-        c.setText((String) entity.getProperty("text"));
-        return c;
-    }
-    /*
-     * Gets a the parameter's value from the request or a default value if the request 
-     * does not contain the parameter.
-     */
-    private static String getParamOrDefault(HttpServletRequest request, String paramName, String revert) {
-        final String paramValue = request.getParameter(paramName);
-        if (paramValue == null) {
-            return revert;
-        }
-        return paramValue;
+        long timestamp = (long) entity.getProperty("timestamp");
+        String nickname = (String) entity.getProperty("nickname");
+        String text = (String) entity.getProperty("text");
+        return new Comment(timestamp, nickname, text);
     }
 }

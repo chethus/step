@@ -4,13 +4,9 @@ package com.google.sps.data;
 public class User {
     private String email;
     private String nickname = null;
-    
-    public User(String email) {
-        this.email = email;
-    }
 
     public User(String email, String nickname) {
-        this(email);
+        this.email = email;
         this.nickname = nickname;
     }
 

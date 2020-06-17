@@ -28,6 +28,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.lang.IllegalArgumentException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,20 +37,19 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/comments")
 public class CommentServlet extends HttpServlet {
+
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private UserService userService = UserServiceFactory.getUserService();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
         if (!userService.isUserLoggedIn()) {
             String loginUrl = userService.createLoginURL("/index.html");
             response.sendRedirect(loginUrl);
         } else {
-
             // Get comment text.
             String text = request.getParameter("text");
-
+            
             // Find userId and user nickname.
             String userId = userService.getCurrentUser().getUserId();
             String nickname = userService.getCurrentUser().getNickname();
@@ -59,7 +59,7 @@ public class CommentServlet extends HttpServlet {
             if (entity != null) {
                 nickname = (String) entity.getProperty("nickname");
             }
-
+            
             // Set properties in Datastore entity.
             Entity commentEntity = new Entity("comment");
             commentEntity.setProperty("userId", userId);
@@ -77,16 +77,28 @@ public class CommentServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
         // Get comment limit parameter.
-        int max = Integer.parseInt(request.getParameter("max"));
+        int max;
+        try {
+            max = Integer.parseInt(request.getParameter("max"));
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Invalid comment limit.");
+            return;
+        }
 
         // Get page number.
         int page;
         try {
             page = Integer.parseInt(request.getParameter("page"));
-        } catch (NumberFormatException e) {
+            if (page < 1) {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Invalid page number.");
             return;
         }
         
@@ -96,8 +108,10 @@ public class CommentServlet extends HttpServlet {
         Query query = new Query("comment").addSort("timestamp", SortDirection.DESCENDING);
         PreparedQuery results = datastore.prepare(query);
 
-        // Skip earlier pages and enforce Comment limit.
+        // Set the max # of comments fetched by the query to limit comments on page.
         FetchOptions options = FetchOptions.Builder.withLimit(max);
+        
+        // To get the correct comments, offset by (# previous pages) * (#comments/page).
         options.offset((page - 1) * max);
 
         for (Entity entity : results.asIterable(options)) {
@@ -108,5 +122,17 @@ public class CommentServlet extends HttpServlet {
         Gson gson = new Gson();
         response.setContentType("application/json");
         response.getWriter().println(gson.toJson(comments));
+    }
+
+    /*
+     * Gets a the parameter's value from the request or a default value if the request 
+     * does not contain the parameter.
+     */
+    private static String getParamOrDefault(HttpServletRequest request, String paramName, String revert) {
+        final String paramValue = request.getParameter(paramName);
+        if (paramValue == null || paramValue.equals("")) {
+            return revert;
+        }
+        return paramValue;
     }
 }
