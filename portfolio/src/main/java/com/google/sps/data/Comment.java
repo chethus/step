@@ -43,32 +43,11 @@ public class Comment {
     }
 
     /**
-     * Returns a Comment from a request.
-     * Fills in appropriate defaults if attributes are null.
-     */
-    public static Comment makeComment(HttpServletRequest request) {
-        String author = getParamOrDefault(request, "author", "Anonymous");
-        String text = getParamOrDefault(request, "text", "");
-        return new Comment(author, text);
-    }
-
-    /**
      * Creates a Comment from a Datastore entity.
     */
     public static Comment makeComment(Entity entity) {
         String author = (String) entity.getProperty("author");
         String text = (String) entity.getProperty("text");
         return new Comment(author, text);
-    }
-    /*
-     * Gets a the parameter's value from the request or a default value if the request 
-     * does not contain the parameter.
-     */
-    private static String getParamOrDefault(HttpServletRequest request, String paramName, String revert) {
-        final String paramValue = request.getParameter(paramName);
-        if (paramValue == null) {
-            return revert;
-        }
-        return paramValue;
     }
 }

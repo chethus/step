@@ -41,16 +41,28 @@ public class GameServlet extends HttpServlet {
         // A post request must have a game start time and either an answer or username (for the highscore list).
         if (startTimeStr == null || (userAnsStr == null && name == null)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Invalid request.");
             return;
         }
 
-        long startTime = Long.parseLong(startTimeStr);
+        long startTime;
+        try {
+            startTime = Long.parseLong(startTimeStr);
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Invalid start time.");
+            return;
+        }
         if (userAnsStr != null) {
 
             // Error if the game is over or if the start time is in the future (modulo some error).
             // Prevents hacking via extending game duration.
             if (isStartTimeIllegal(startTime)) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("text/plain");
+                response.getWriter().println("Illegal start time.");
                 return;
             }
 
@@ -101,13 +113,17 @@ public class GameServlet extends HttpServlet {
         String startTimeStr = request.getParameter("start");
         if (startTimeStr == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("No start time given.");
             return;
         }
 
-        // Check if the start time is invalid.
+        // Check if the start time is illegal.
         long startTime = Long.parseLong(startTimeStr);
         if (isStartTimeIllegal(startTime)) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Illegal start time.");
             return;
         }
 

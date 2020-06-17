@@ -32,6 +32,8 @@ public class ScoreServlet extends HttpServlet {
             page = Integer.parseInt(request.getParameter("page"));
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Invalid page number.");
             return;
         }
         
@@ -49,6 +51,13 @@ public class ScoreServlet extends HttpServlet {
         for (Entity entity : results.asIterable(options)) {
             scores.add(Score.makeScore(entity, rank));
             rank ++;
+        }
+
+        if (scores.size() == 0 && page > 1) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Page is empty.");
+            return;
         }
 
         // Send JSON back to site.
