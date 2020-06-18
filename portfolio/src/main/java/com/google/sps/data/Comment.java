@@ -7,20 +7,14 @@ import com.google.appengine.api.datastore.Entity;
  * A class for storing a Comment.
  */
 public class Comment {
+
     private String nickname;
     private String text;
     private long timestamp;
     private String imageSrc;
 
-    /**
-     * No argument constructor.
-     * Set fields with setter methods.
-     */
-    public Comment() {
-    }
-
-    public Comment(String nickname, String text, String imageSrc) {
-        this.timestamp = System.currentTimeMillis();
+    public Comment(long timestamp, String nickname, String text, String imageSrc) {
+        this.timestamp = timestamp;
         this.nickname = nickname;
         this.text = text;
         this.imageSrc = imageSrc;
@@ -31,8 +25,8 @@ public class Comment {
         return timestamp;
     }
 
-    public void setTimestamp(long time) {
-        this.timestamp = time;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getNickname() {
@@ -63,22 +57,10 @@ public class Comment {
      * Creates a Comment from a Datastore entity.
     */
     public static Comment makeComment(Entity entity) {
-        Comment c = new Comment();
-        c.setTimestamp((long) entity.getProperty("timestamp"));
-        c.setNickname((String) entity.getProperty("nickname"));
-        c.setText((String) entity.getProperty("text"));
-        c.setImageSrc((String) entity.getProperty("imageSrc"));
-        return c;
-    }
-    /*
-     * Gets a the parameter's value from the request or a default value if the request 
-     * does not contain the parameter.
-     */
-    private static String getParamOrDefault(HttpServletRequest request, String paramName, String revert) {
-        final String paramValue = request.getParameter(paramName);
-        if (paramValue == null) {
-            return revert;
-        }
-        return paramValue;
+        long timestamp = (long) entity.getProperty("timestamp");
+        String nickname = (String) entity.getProperty("nickname");
+        String text = (String) entity.getProperty("text");
+        String imageSrc = (String) entity.getProperty("imageSrc");
+        return new Comment(timestamp, nickname, text, imageSrc);
     }
 }

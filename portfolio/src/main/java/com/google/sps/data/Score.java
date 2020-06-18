@@ -7,16 +7,10 @@ import com.google.appengine.api.datastore.Entity;
  * A class for storing a Score.
  */
 public class Score {
+    
     private String nickname;
     private int score;
     private int rank;
-
-    /**
-     * No argument constructor.
-     * Set fields with setter methods.
-     */
-    public Score() {
-    }
 
     public Score(String nickname, int score, int rank) {
         this.nickname = nickname;
@@ -48,15 +42,13 @@ public class Score {
         this.rank = rank;
     }
 
-
     /**
      * Creates a Score from a Datastore entity and a given rank.
     */
     public static Score makeScore(Entity entity, int rank) {
-        Score s = new Score();
-        s.setNickname((String) entity.getProperty("nickname"));
-        s.setScore(Integer.parseInt(entity.getProperty("score").toString()));
-        s.setRank(rank);
+        String nickname = (String) entity.getProperty("nickname");
+        int score = Integer.parseInt(entity.getProperty("score").toString());
+        Score s = new Score(nickname, score, rank);
         return s;
     }
 }
