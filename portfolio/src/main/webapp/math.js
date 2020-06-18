@@ -28,6 +28,13 @@ async function startGame() {
     const getRequest = new Request("game?start=" + startTime, {method: "GET"});
     const getResponse = await fetch(getRequest);
     const getResponseText = await getResponse.text();
+
+    // If there was a server error, alert and exit.
+    if (getResponse.status >= 400) {
+        alert(getResponseText);
+        return;
+    }
+
     question.src = "data:image/png;base64, " + getResponseText;
     setTimeout(gameOver, 60000);
 }
@@ -36,9 +43,14 @@ async function check() {
     const answer = document.getElementById("answer");
     // Compare answers as Strings since input box holds String.
     const checkRequest = new Request("game?start=" + startTime + "&ans=" + answer.value, {method: "POST"});
-    const checkPromise = fetch(checkRequest);
-    const checkResponse = await checkPromise;
+    const checkResponse = await fetch(checkRequest);
     const checkResponseText = await checkResponse.text();
+
+    // If there was a server error, alert with text and exit.
+    if (checkResponse.status >= 400) {
+        alert(checkResponseText);
+        return;
+    }
 
     const getRequest = new Request("game?start=" + startTime, {method: "GET"});
     const getPromise = fetch(getRequest);
@@ -50,6 +62,13 @@ async function check() {
     // Update with next question.
     const getResponse = await getPromise;
     const getResponseText = await getResponse.text();
+
+    // If there was an error during the get request, alert and exit.
+    if (getResponse.status >= 400) {
+        alert(getResponseText);
+        return;
+    }
+
     question.src = "data:image/png;base64, " + getResponseText;
 }
 
@@ -65,7 +84,13 @@ async function gameOver() {
     const addScore = confirm("Click OK to be added to the highscore list.");
     if (addScore) {
         const scoreRequest = new Request("game?start=" + startTime, {method: "POST"});
-        await fetch(scoreRequest);
+        const response = await fetch(scoreRequest);
+
+        // If there was a server error, alert and exit.
+        if (response.status >= 400) {
+            alert(await response.text());
+            return;
+        }
         loadScores();
     }
 }
@@ -74,7 +99,6 @@ async function gameOver() {
  * Fetches scores from the server and adds them to the DOM.
  */
 async function loadScores() {
-
     // Check if page field is valid.
     let page = $("#score-page").val();
     if (parseInt(page) != page || parseInt(page) <= 0) {
@@ -91,9 +115,17 @@ async function loadScores() {
     queryString += "&page=" + page;
   
     // Request JSON based on user entry limit.
-    const scoresJSON = await fetch("/scores?" + queryString);
+    const scoresResponse = await fetch("/scores?" + queryString);
+
+    // If there was a server error, alert with text and exit.
+    if (scoresResponse.status >= 400) {
+        alert(await scoresResponse.text());
+        $("#score-page").val(1);
+        page = 1;
+    }
+
     // Convert JSON to object.
-    const scores = await scoresJSON.json();
+    const scores = await scoresResponse.json();
 
     // Add all scores to score container.
     const container = document.getElementById("score-container");
@@ -104,7 +136,6 @@ async function loadScores() {
 $(document).ready(loadScores);
 
 function createScore(entry) {
-       
     // Set up div for a score.
     const scoreDiv = document.createElement("li");
     scoreDiv.setAttribute("class", "score-entry");
