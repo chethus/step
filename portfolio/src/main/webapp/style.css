@@ -40,6 +40,19 @@ p {
     color: white;
 }
 
+
+#login-nav-btn, #logout-nav-btn, #nickname-nav-btn {
+    float: right;
+}
+
+#login-nav-link, #logout-nav-link, #nickname-nav-link {
+    display: none;
+}
+
+#login {
+    display: none;
+}
+
 .active {
     background-color: dodgerblue;
 }
@@ -117,7 +130,7 @@ button, select {
 }
 
 #start {
-    display: inline-block;
+    display: none;
 }
 
 #question {
@@ -143,13 +156,22 @@ button, select {
     display: none;
 }
 
-#form-container, #delete-container {
+#form-container, #delete-container, #nickname-container {
     align-items: left;
     max-width: 25vw;
     margin: auto;
 }
 
-#comment-submit {
+.login {
+    display: none;
+}
+
+#comment-form, #nickname-form {
+    display: none;
+}
+
+#comment-submit, #nickname-submit {
+    display: none;
     background-color: green;
     color: white;
     margin: 10px;
@@ -158,13 +180,13 @@ button, select {
     font-size: min(3vh, 4vw);
 }
 
-#comment-container {
+#comment-container, #score-container {
     margin: 1vh 10vw;
     list-style-type: none;
     border: thin solid black;
 }
 
-.comment {
+.comment{
     display: block;
     align: left;
     width: 70vw;
@@ -172,11 +194,20 @@ button, select {
     border: thin dotted #EEE;
 }
 
-.name {
+.score-entry {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 50vw;
+    margin: 2vh auto;
+    border: thin dotted #EEE;
+}
+
+.nickname {
     color: dodgerblue;
 }
 
-#page {
+.page {
     font-size: min(4.5vh, 6vw);
     max-width: min(9vh, 12vw);
 }
