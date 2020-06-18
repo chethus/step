@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.Entity;
  * A class for storing a Comment.
  */
 public class Comment {
+
     private String nickname;
     private String text;
     private long timestamp;
@@ -26,8 +27,8 @@ public class Comment {
         return timestamp;
     }
 
-    public void setTimestamp(long time) {
-        this.timestamp = time;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getNickname() {
@@ -73,17 +74,5 @@ public class Comment {
         float happyScore = ((Double) entity.getProperty("happyScore")).floatValue();
         Comment c = new Comment(timestamp, nickname, text, imageSrc, happyScore);
         return c;
-    }
-
-    /*
-     * Gets a the parameter's value from the request or a default value if the request 
-     * does not contain the parameter.
-     */
-    private static String getParamOrDefault(HttpServletRequest request, String paramName, String revert) {
-        final String paramValue = request.getParameter(paramName);
-        if (paramValue == null) {
-            return revert;
-        }
-        return paramValue;
     }
 }

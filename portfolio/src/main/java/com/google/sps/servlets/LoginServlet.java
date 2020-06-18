@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+    
     private UserService userService = UserServiceFactory.getUserService();
 
     @Override
