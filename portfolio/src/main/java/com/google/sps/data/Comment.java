@@ -7,39 +7,36 @@ import com.google.appengine.api.datastore.Entity;
  * A class for storing a Comment.
  */
 public class Comment {
-    private String author;
+
+    private String nickname;
     private String text;
     private long timestamp;
+    private String imageSrc;
+    private float happyScore;
 
-    /**
-     * No argument constructor.
-     * Set fields with setter methods.
-     */
-    public Comment() {
-        this.timestamp = System.currentTimeMillis();
-    }
-
-    public Comment(String author, String text) {
-        this();
-        this.author = author;
+    public Comment(long timestamp, String nickname, String text, String imageSrc, float happyScore) {
+        this.timestamp = timestamp;
+        this.nickname = nickname;
         this.text = text;
+        this.imageSrc = imageSrc;
+        this.happyScore = happyScore;
     }
 
 
     public long getTimestamp() {
-        return System.currentTimeMillis();
+        return timestamp;
     }
 
-    public void setTimestamp(long time) {
-        this.timestamp = time;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getNickname() {
+        return nickname;
     }
     
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getText() {
@@ -50,35 +47,32 @@ public class Comment {
         this.text = text;
     }
 
-    /**
-     * Returns a Comment from a request.
-     * Fills in appropriate defaults if attributes are null.
-     */
-    public static Comment makeComment(HttpServletRequest request) {
-        Comment c = new Comment();
-        c.setAuthor(getParamOrDefault(request, "author", "Anonymous"));
-        c.setText(getParamOrDefault(request, "text", ""));
-        return c;
+    public String getImageSrc() {
+        return imageSrc;
+    }
+
+    public void setImageSrc(String imageSrc) {
+        this.imageSrc = imageSrc;
+    }
+
+    public void setHappyScore(float happyScore) {
+        this.happyScore = happyScore;
+    }
+
+    public float getHappyScore() {
+        return happyScore;
     }
 
     /**
      * Creates a Comment from a Datastore entity.
     */
     public static Comment makeComment(Entity entity) {
-        Comment c = new Comment();
-        c.setAuthor((String) entity.getProperty("author"));
-        c.setText((String) entity.getProperty("text"));
+        long timestamp = (long) entity.getProperty("timestamp");
+        String nickname = (String) entity.getProperty("nickname");
+        String text = (String) entity.getProperty("text");
+        String imageSrc = (String) entity.getProperty("imageSrc");
+        float happyScore = ((Double) entity.getProperty("happyScore")).floatValue();
+        Comment c = new Comment(timestamp, nickname, text, imageSrc, happyScore);
         return c;
-    }
-    /*
-     * Gets a the parameter's value from the request or a default value if the request 
-     * does not contain the parameter.
-     */
-    private static String getParamOrDefault(HttpServletRequest request, String paramName, String revert) {
-        final String paramValue = request.getParameter(paramName);
-        if (paramValue == null) {
-            return revert;
-        }
-        return paramValue;
     }
 }
