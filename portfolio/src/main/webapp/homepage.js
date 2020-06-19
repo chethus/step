@@ -60,7 +60,7 @@ async function createComment(comment) {
     }
     
     commentDiv.innerHTML += `
-    ☹<meter class="happy-meter" value="` + comment.happyScore + `" min="-1" max="1"></meter>😊`;
+    <br>☹<meter class="happy-meter" value="` + comment.happyScore + `" min="-1" max="1"></meter>😊`;
     
     // If the comment has an id (it is the user's own comment), allow the user to edit and delete it.
     if (comment.hasOwnProperty("commentId")) {
