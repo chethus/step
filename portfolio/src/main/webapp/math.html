@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
     <head>
+        <meta name="description" content="Play my math game and add your name to the highscore list!">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="dodgerblue">
         <title> Chet's Projects</title>
         <link rel="stylesheet" href="style.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://www.gstatic.com/charts/loader.js"></script>
-        <script src="common.js"></script>
-        <script src="math.js"></script>
     </head>
     <body>
         <ul class="navbar">
@@ -22,39 +20,43 @@
                 <a id="nickname-nav-link" href="nickname.html">Set Display Name</a>
             </li>
         </ul>
+        <h1> Mental Math Game </h1>
+        <div class="center">
+            <p id="instructions">
+                You have 1 minute to answer as many questions as you can.
+            </p>
+            <br>
+            <p id="scores">
+                Score: 0
+            </p>
+            <br>
+            <button class="login">Login</button>
+            <button id="start" onclick="startGame()">Start</button>
+            <br>
+            <img id="question">&nbsp;</img>
+            <br>
+            <input id="answer" type="text" value="" onkeypress="if (event.key ==='Enter') check()">
+            <br>
+            <button id="submit" onclick="check()">Submit</button>
+        </div>
+        <h1> Highscores </h1>
+        <!-- Comment display options -->
+        <div class="flex-center">
+            <button onclick="prevPage()">&lt;</button>
+            <input id="score-page" class="page" onchange="loadHighscores()" type="text" value="1">
+            <button onclick="nextPage()">&gt;</button>
+            <select id="score-max" class="select-max" onchange="loadHighscores()" name="max">
+                <option value="5">5</option>
+                <option value="20" selected>20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+        <!-- Container to udpate with comments using JS -->
+        <div class="ul" id="score-container">
     </body>
-    <h1> Mental Math Game </h1>
-    <div class="center">
-        <p id="instructions">
-            You have 1 minute to answer as many questions as you can.
-        </p>
-        <br>
-        <p id="scores">
-            Score: 0
-        </p>
-        <br>
-        <button class="login">Login</button>
-        <button id="start" onclick="startGame()">Start</button>
-        <br>
-        <img id="question">&nbsp;</img>
-        <br>
-        <input id="answer" type="text" value="" onkeypress="if (event.key ==='Enter') check()">
-        <br>
-        <button id="submit" onclick="check()">Submit</button>
-    </div>
-    <h1> Highscores </h1>
-    <!-- Comment display options -->
-    <div class="flex-center">
-        <button onclick="prevPage()">&lt;</button>
-        <input id="score-page" class="page" onchange="loadHighscores()" type="text" value="1">
-        <button onclick="nextPage()">&gt;</button>
-        <select id="score-max" class="select-max" onchange="loadHighscores()" name="max">
-            <option value="5">5</option>
-            <option value="20" selected>20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-        </select>
-    </div>
-    <!-- Container to udpate with comments using JS -->
-    <div class="ul" id="score-container">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="common.js"></script>
+    <script src="math.js"></script>
 </html>
