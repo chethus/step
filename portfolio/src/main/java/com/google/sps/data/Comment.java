@@ -11,14 +11,14 @@ public class Comment {
     private String nickname;
     private String text;
     private long timestamp;
-    private String imageSrc;
+    private String blobKey;
     private float happyScore;
 
-    public Comment(long timestamp, String nickname, String text, String imageSrc, float happyScore) {
+    public Comment(long timestamp, String nickname, String text, String blobKey, float happyScore) {
         this.timestamp = timestamp;
         this.nickname = nickname;
         this.text = text;
-        this.imageSrc = imageSrc;
+        this.blobKey = blobKey;
         this.happyScore = happyScore;
     }
 
@@ -47,12 +47,12 @@ public class Comment {
         this.text = text;
     }
 
-    public String getImageSrc() {
-        return imageSrc;
+    public String getBlobKey() {
+        return blobKey;
     }
 
-    public void setImageSrc(String imageSrc) {
-        this.imageSrc = imageSrc;
+    public void setBlobKey(String blobKey) {
+        this.blobKey = blobKey;
     }
 
     public void setHappyScore(float happyScore) {
@@ -70,9 +70,9 @@ public class Comment {
         long timestamp = (long) entity.getProperty("timestamp");
         String nickname = (String) entity.getProperty("nickname");
         String text = (String) entity.getProperty("text");
-        String imageSrc = (String) entity.getProperty("imageSrc");
+        String blobKey = (String) entity.getProperty("blobKey");
         float happyScore = ((Double) entity.getProperty("happyScore")).floatValue();
-        Comment c = new Comment(timestamp, nickname, text, imageSrc, happyScore);
+        Comment c = new Comment(timestamp, nickname, text, blobKey, happyScore);
         return c;
     }
 }

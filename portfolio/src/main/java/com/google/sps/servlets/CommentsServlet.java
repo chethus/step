@@ -41,9 +41,6 @@ import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
 
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
@@ -65,7 +62,6 @@ public class CommentsServlet extends HttpServlet {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private UserService userService = UserServiceFactory.getUserService();
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    private ImagesService imagesService = ImagesServiceFactory.getImagesService();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -103,7 +99,7 @@ public class CommentsServlet extends HttpServlet {
             commentEntity.setProperty("nickname", nickname);
             commentEntity.setProperty("timestamp", System.currentTimeMillis());
             commentEntity.setProperty("text", text);
-            commentEntity.setProperty("imageSrc", getFileUrl(request, "image"));
+            commentEntity.setProperty("blobKey", getBlobKey(request, "image"));
             commentEntity.setProperty("happyScore", getSentimentScore(text));
             datastore.put(commentEntity);
         }
@@ -170,7 +166,7 @@ public class CommentsServlet extends HttpServlet {
     }
 
     /** Returns file URL or null if no file was uploaded. */
-    public String getFileUrl(HttpServletRequest request, String formElementName) {
+    public String getBlobKey(HttpServletRequest request, String formElementName) {
         Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
         List<BlobKey> blobKeys = blobs.get(formElementName);
 
@@ -190,15 +186,7 @@ public class CommentsServlet extends HttpServlet {
             return null;
         }
 
-        ServingUrlOptions options = ServingUrlOptions.Builder.withBlobKey(blobKey);
-
-        // Return URL with relative path of ImagesService URL if possible.
-        try {
-            URL url = new URL(imagesService.getServingUrl(options));
-            return url.getPath();
-        } catch (MalformedURLException e) {
-            return imagesService.getServingUrl(options);
-        }
+        return blobKey.getKeyString();
     }
 
     /**
