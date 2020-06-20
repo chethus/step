@@ -2,10 +2,11 @@
 <html lang="en-US">
     <head>
         <meta charset="utf-8">
+        <meta name="description" content="Check out my photos.">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="dodgerblue">
         <title> Chet's Gallery </title>
         <link rel="stylesheet" href="style.css">
-        <script src="gallery.js"></script>
     </head>
     <body>
         <ul class="navbar">
@@ -13,6 +14,11 @@
             <li><a href="projects.html">Projects</a></li>
             <li class="active"><a href="gallery.html">Gallery</a></li>
             <li><a href="math.html">Math&nbsp;Game</a></li>
+            <li id="logout-nav-btn"><a id="logout-nav-link">Logout</a></li>
+            <li id="login-nav-btn"><a id="login-nav-link">Login</a></li>
+            <li id="nickname-nav-btn">
+                <a id="nickname-nav-link" href="nickname.html">Set Display Name</a>
+            </li>
         </ul>
         <h1> Gallery </h1>
         <!-- Image and caption set by Javascript -->
@@ -24,4 +30,7 @@
             <button class="gallerybtn" onclick="nextImage()">&gt;</button>
         </div>
     </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="common.js"></script>
+    <script src="gallery.js"></script>
 </html>

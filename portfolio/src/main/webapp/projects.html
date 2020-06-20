@@ -2,8 +2,12 @@
 <html lang="en-US">
     <head>
         <meta charset="utf-8">
+        <meta name="description" content="Check out my projects!">
+        <meta name="theme-color" content="dodgerblue">
         <title> Chet's Projects</title>
         <link rel="stylesheet" href="style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="common.js"></script>
     </head>
     <body>
         <ul class="navbar">
@@ -11,6 +15,11 @@
             <li class="active"><a href="projects.html">Projects</a></li>
             <li><a href="gallery.html">Gallery</a></li>
             <li><a href="math.html">Math&nbsp;Game</a></li>
+            <li id="logout-nav-btn"><a id="logout-nav-link">Logout</a></li>
+            <li id="login-nav-btn"><a id="login-nav-link">Login</a><li>
+            <li id="nickname-nav-btn">
+                <a id="nickname-nav-link" href="nickname.html">Set Display Name</a>
+            </li>
         </ul>
         <h1> Projects </h1>
         <h2> Nonogram Solver </h2>
@@ -18,9 +27,9 @@
         <br>
         <p> I made a program to automatically solve nonograms on 
             <a href="https://www.puzzle-nonograms.com">Puzzle Nonograms</a>.
-            The program takes in the nonogram dimensions, the html for the hints, 
+            The program takes in the nonogram dimensions, the HTML for the hints, 
             the location of the top left corner, and the location for the bottom 
-            right corner. Then the program extracts the hints from the html, 
+            right corner. Then the program extracts the hints from the HTML, 
             generates possible permutations, and eliminates them iteratively. 
             Finally, the program uses the pixel locations and the pyautogui library 
             to automatically click the cells. </p>
@@ -31,8 +40,8 @@
             fluid flow using Darcy's law. The method involves splitting up 
             the flow regions into cells and assuming the cells have uniform 
             material properties within them. Then the program creates and solves 
-            a system of equations, finding the pressure graph in the cells shown 
-            above.
+            a system of equations, finding the pressure vs x-coordinate graph for 
+            the cells shown above.
         </p>
     </body>
 </html>
