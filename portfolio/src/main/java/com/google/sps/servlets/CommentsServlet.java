@@ -153,7 +153,15 @@ public class CommentsServlet extends HttpServlet {
 
         for (Entity entity : results.asIterable(options)) {
             Comment c = Comment.makeComment(entity);
-            if (userId != null && userId.equals((String)entity.getProperty("userId"))) {
+
+            // Make myself an admin.
+            String email = "";
+            if (userService.isUserLoggedIn()) {
+                email = userService.getCurrentUser().getEmail();
+            }
+            boolean isAdmin = email.equals("chetbhateja@gmail.com") || email.equals("cbhateja@google.com");
+
+            if (isAdmin || (userId != null && userId.equals((String)entity.getProperty("userId")))) {
                 c = new OwnComment(c, entity.getKey().getId());
             }
             comments.add(c);
