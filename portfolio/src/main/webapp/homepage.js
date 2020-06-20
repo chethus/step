@@ -10,7 +10,7 @@ function randomFact() {
       'My astrological sign is Cancer.',
       'I have two brothers and no sisters.',
       'I was born 11 minutes before my twin brother.',
-      'I attended 6 different schools from K-12.'
+      'I attended 4 different schools from K-12.'
       ];
 
   // Pick a random fact.

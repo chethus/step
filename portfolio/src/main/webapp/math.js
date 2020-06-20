@@ -94,6 +94,10 @@ async function gameOver() {
         }
         loadScores();
     }
+
+    // Reset score.
+    score = 0;
+    scores.textContent = "Score: " + score;
 }
 
 // Import package for making a table.
@@ -140,7 +144,6 @@ async function loadScores() {
     scores.forEach(score => data.addRow([score.nickname, score.score]));
 
     const options = {
-        showRowNumber: true,
         width: '100%',
         height: '100%'
     };
