@@ -25,27 +25,33 @@ function randomFact() {
  * Fetches comments from the server and adds them to the DOM.
  */
 async function loadComments() {
-
     // Check if page field is valid.
-    let page = $("#page").val();
+    let page = $("#comment-page").val();
     if (parseInt(page) != page || parseInt(page) <= 0) {
         alert("Invalid page");
-        $("#page").val(1);
+        $("#comment-page").val(1);
         page = 1;
     }
 
     // Get comment limit from form.
-    const selectMax = document.getElementById("select-max");
+    const selectMax = document.getElementById("comment-max");
     const maxComments = selectMax.options[selectMax.selectedIndex].value;
 
     let queryString = "max=" + maxComments;
     queryString += "&page=" + page;
   
     // Request JSON based on user comment limit.
-    console.log("/data?" + queryString);
-    const commentsJSON = await fetch("/data?" + queryString);
-    // Convert JSON to object.
-    const comments = await commentsJSON.json();
+    const response = await fetch("/data?" + queryString);
+
+    // If there is an error, alert with the message.
+    if (response.status >= 400) {
+        $("#comment-page").val(1);
+        page = 1;
+        alert(await response.text());
+    }
+
+    // Otherwise, convert JSON to object.
+    const comments = await response.json();
 
     // Add all comments to comment container.
     const container = document.getElementById("comment-container");
@@ -56,10 +62,33 @@ async function loadComments() {
 $(document).ready(loadComments);
 
 /**
+ * Load comment form based on login status.
+ */
+async function loadCommentForm() {
+    // Request user information from server.
+    const responseJSON = await fetch("/user");
+    const response = await responseJSON.json();
+    
+    // If the user is not logged in, the server responds with a login url.
+    if (typeof response === "string") {
+
+        // Unhide a login button with the login url.
+        $("login").css("display", "inline-block");
+        loginBtn.setAttribute("onclick","location.href=\"" + response + "\"");
+    } else {
+
+        // Otherwise, unhide the comment form.
+        $("#comment-form").css("display", "block");
+        $("#comment-submit").css("display", "inline-block");
+    }
+}
+
+$(document).ready(loadCommentForm);
+
+/**
  * Create a list entry with the given text.
  */
 function createComment(comment) {
-    
     // Set up div for a comment.
     const commentDiv = document.createElement("li");
     commentDiv.setAttribute("class", "comment");
@@ -78,17 +107,22 @@ function createComment(comment) {
  * Sends a Comment using a POST request and receives the Comment ID.
  */
 async function submitComment() {
-
     // Make request from data in Comment form.
     const commentForm = document.getElementById("comment-form");
     const formData = (new URLSearchParams(new FormData(commentForm))).toString();
     const request = new Request("/data?" + formData, {method: "POST"});
 
-    // Reset Comment form and get response from request.
+    // Reset comment form and get response from request.
     commentForm.reset();
     const response = await fetch(request);
 
-    // Update comments with new comment.
+    // If there was an error, alert with response text and exit.
+    if (response.status >= 400) {
+        alert(await response.text());
+        return;
+    }
+
+    // Otherwise, update comments with new comment.
     loadComments();
 
     // Provide user with their comment ID.
@@ -102,10 +136,17 @@ async function submitComment() {
  * Delete all comments and update the page.
  */
 async function deleteAll() {
-
     // Send a request to DeleteServlet and reload comments.
     const request = new Request("/delete", {method: "POST"});
     const response = await fetch(request);
+
+    // If there was an error, alert and exit.
+    if (response.status >= 400) {
+        alert(await response.text());
+        return;
+    }
+
+    // Otherwise, reload the comments.
     loadComments();
 }
 
@@ -113,7 +154,6 @@ async function deleteAll() {
  * Deletes a Comment using the Comment ID in the delete form.
  */
 async function deleteComment() {
-
     // Extract delete form data into request.
     const deleteForm = document.getElementById("delete-form");
     const formData = (new URLSearchParams(new FormData(deleteForm))).toString();
@@ -123,8 +163,9 @@ async function deleteComment() {
 
     // Check response status and update comments.
     const response = await fetch(request);
-    if (response.status === 500) {
-        alert("Comment ID not found");
+    if (response.status >= 400) {
+        alert(await response.text());
+        return;
     }
     loadComments();
 }
@@ -142,7 +183,7 @@ function createP(text) {
  * Moves to next page of comments.
  */
 function nextPage() {
-    $("#page").val(parseInt($("#page").val()) + 1);
+    $("#comment-page").val(parseInt($("#comment-page").val()) + 1);
     loadComments();
 }
 
@@ -150,6 +191,6 @@ function nextPage() {
  * Moves to previous page of comments.
  */
 function prevPage() {
-    $("#page").val(parseInt($("#page").val()) - 1);
+    $("#comment-page").val(parseInt($("#comment-page").val()) - 1);
     loadComments();
 }

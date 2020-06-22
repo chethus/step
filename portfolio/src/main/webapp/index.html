@@ -42,14 +42,17 @@
     <h1>Leave A Comment</h1>
     <!-- Form for submitting comments via POST request and returning their IDs -->
     <div id="form-container">
+        <!-- Comment form his hidden unless user is logged in -->
         <form id="comment-form">
             <label for="author">Author&nbsp;</label>
             <input type="text" id="author" name="author"><br>
             <label for="text">Text&nbsp;</label>
-            <input type="textarea" id="text" name="text"><br>
+            <input type="textarea" id="text" name="text">
         </form>
         <div class="center">
-            <button onclick="submitComment()">Submit</button>
+            <!-- Display submit button if logged in, otherwise, display login button -->
+            <button class="login">Login</button>
+            <button id="comment-submit" onclick="submitComment()">Submit</button>
         </div>
     </div>
     <!-- Form for deleting a specific coment -->
@@ -68,9 +71,9 @@
     <div class="flex-center">
         <button onclick=deleteAll()>Delete All</button>
         <button onclick="prevPage()">&lt;</button>
-        <input id="page" onchange="loadComments()" type="text" value="1">
+        <input id="comment-page" class="page" onchange="loadComments()" type="text" value="1">
         <button onclick="nextPage()">&gt;</button>
-        <select id="select-max" onchange="loadComments()" name="max">
+        <select id="comment-max" class="select-max" onchange="loadComments()" name="max">
             <option value="5">5</option>
             <option value="20" selected>20</option>
             <option value="50">50</option>

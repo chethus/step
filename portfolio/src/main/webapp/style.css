@@ -149,7 +149,16 @@ button, select {
     margin: auto;
 }
 
+.login {
+    display: none;
+}
+
+#comment-form {
+    display: none;
+}
+
 #comment-submit {
+    display: none;
     background-color: green;
     color: white;
     margin: 10px;
@@ -158,16 +167,25 @@ button, select {
     font-size: min(3vh, 4vw);
 }
 
-#comment-container {
+#comment-container, #score-container {
     margin: 1vh 10vw;
     list-style-type: none;
     border: thin solid black;
 }
 
-.comment {
+.comment{
     display: block;
     align: left;
     width: 70vw;
+    margin: 2vh auto;
+    border: thin dotted #EEE;
+}
+
+.score-entry {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 50vw;
     margin: 2vh auto;
     border: thin dotted #EEE;
 }
@@ -176,7 +194,7 @@ button, select {
     color: dodgerblue;
 }
 
-#page {
+.page {
     font-size: min(4.5vh, 6vw);
     max-width: min(9vh, 12vw);
 }

@@ -26,6 +26,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.lang.IllegalArgumentException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,19 +35,19 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+    
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        
-        // Create Comment from request.
-        Comment c = Comment.makeComment(request);
+        String author = getParamOrDefault(request, "author", "Anonymous");
+        String text = getParamOrDefault(request, "text", "");
 
         // Set properties in Datastore entity.
         Entity commentEntity = new Entity("comment");
-        commentEntity.setProperty("timestamp", c.getTimestamp());
-        commentEntity.setProperty("author", c.getAuthor());
-        commentEntity.setProperty("text", c.getText());
+        commentEntity.setProperty("timestamp", System.currentTimeMillis());
+        commentEntity.setProperty("author", author);
+        commentEntity.setProperty("text", text);
         datastore.put(commentEntity);
 
         // Return the comment ID.
@@ -57,17 +58,28 @@ public class DataServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-
         // Get comment limit parameter.
-        int max = Integer.parseInt(request.getParameter("max"));
+        int max;
+        try {
+            max = Integer.parseInt(request.getParameter("max"));
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Invalid comment limit.");
+            return;
+        }
 
         // Get page number.
         int page;
         try {
             page = Integer.parseInt(request.getParameter("page"));
-        } catch (NumberFormatException e) {
-            response.setStatus(404);
+            if (page < 1) {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/plain");
+            response.getWriter().println("Invalid page number.");
             return;
         }
         
@@ -77,8 +89,10 @@ public class DataServlet extends HttpServlet {
         Query query = new Query("comment").addSort("timestamp", SortDirection.DESCENDING);
         PreparedQuery results = datastore.prepare(query);
 
-        // Skip earlier pages and enforce Comment limit.
+        // Set the max # of comments fetched by the query to limit comments on page.
         FetchOptions options = FetchOptions.Builder.withLimit(max);
+        
+        // To get the correct comments, offset by (# previous pages) * (#comments/page).
         options.offset((page - 1) * max);
 
         for (Entity entity : results.asIterable(options)) {
@@ -89,5 +103,17 @@ public class DataServlet extends HttpServlet {
         Gson gson = new Gson();
         response.setContentType("application/json");
         response.getWriter().println(gson.toJson(comments));
+    }
+
+    /*
+     * Gets a the parameter's value from the request or a default value if the request 
+     * does not contain the parameter.
+     */
+    private static String getParamOrDefault(HttpServletRequest request, String paramName, String revert) {
+        final String paramValue = request.getParameter(paramName);
+        if (paramValue == null || paramValue.equals("")) {
+            return revert;
+        }
+        return paramValue;
     }
 }
